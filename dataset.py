@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 
 
-def process_dataset() -> pd.DataFrame:
+def read_dataset() -> pd.DataFrame:
     """
     Reads the multiple csv files and combines into one.
     Obtained from: https://www.kaggle.com/datasets/chuckephron/leagueoflegends/data
@@ -38,8 +38,6 @@ def process_dataset() -> pd.DataFrame:
 
     return X, y
 
-process_dataset()
-
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
     Creates training, validation and testing datasets.
@@ -48,10 +46,10 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
     Returns:
         tuple: Returns a tuple of (X_train, X_validation, ..., y_test) 
     """
-    X, y = get_dataset()
+    X, y = read_dataset()
 
     if normalise:
-        X = normalize(X.iloc[:,2:])
+        ...
 
     validation_split = validation_split/train_split
 
@@ -62,6 +60,8 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
     X_validation, X_test, y_validation, y_test = train_test_split(X_validation, y_validation, test_size=validation_split)
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
+
+print(test_train())
 
 def plot_correlation_matrix() -> None:
     """
