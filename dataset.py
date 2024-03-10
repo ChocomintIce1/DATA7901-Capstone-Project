@@ -15,7 +15,28 @@ def process_dataset() -> pd.DataFrame:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    LeagueofLegends_df = pd.read_csv('archive/LeagueofLegends.csv')
+    df = pd.read_csv('archive/LeagueofLegends.csv')
+
+    # Clean up dataset
+
+    # According to this article, https://lolesports.com/article/dev-diary-win-probability-powered-by-aws-at-worlds/blt403ee07f98e2e0fc
+    # The predictor variables were:
+    # Game time (the in-game time)
+    # Gold % (player gold / total gold in game)
+    # Tower kills
+    # Dragon kills (whether a team has dragon soul or not)
+    # Inhibitor timers (how long until an inhibitor respawns) for each inhibitor
+    
+    # Only predictor variables relating to the list above were selected.
+    X = df[['golddiff', 'bKills', 'bTowers', 'bInhibs', 'bDragons', 'bBarons', 'bHeralds',
+                'rKills', 'rTowers', 'rInhibs', 'rDragons', 'rBarons', 'rHeralds',
+                'goldblueTop', 'goldblueJungle', 'goldblueMiddle', 'goldblueADC', 'goldblueSupport',
+                'goldredTop', 'goldredJungle', 'goldredMiddle', 'goldredADC', 'goldredSupport']]
+
+    # For selecting the labels, let 1 = blue side win and 0 = red side win
+    y = df[['bResult']]
+
+    return X, y
 
 process_dataset()
 
