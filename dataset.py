@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import normalize
 
 
 def get_dataset() -> pd.DataFrame:
@@ -15,7 +16,7 @@ def get_dataset() -> pd.DataFrame:
 
     return X, y
 
-def test_train(train_split=0.7, validation_split=0.2) -> pd.DataFrame:
+def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
     Creates training, validation and testing datasets.
     Initially configured to a 70-20-10 split
@@ -24,12 +25,13 @@ def test_train(train_split=0.7, validation_split=0.2) -> pd.DataFrame:
         tuple: Returns a tuple of (X_train, X_validation, ..., y_test) 
     """
     X, y = get_dataset()
+
+    if normalise:
+        X = normalize(X.iloc[:,2:])
+
     validation_split = validation_split/train_split
-    print('n:', X.shape[0])
 
     X_train, X_validation, y_train, y_validation = train_test_split(X, y, test_size=1-train_split)
     X_validation, X_test, y_validation, y_test = train_test_split(X_validation, y_validation, test_size=validation_split)
-
-    print(X_train.shape[0], X_validation.shape[0], X_test.shape[0])
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
