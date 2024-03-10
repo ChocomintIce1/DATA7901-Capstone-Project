@@ -6,23 +6,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 
 
-def get_dataset() -> pd.DataFrame:
+def process_dataset() -> pd.DataFrame:
     """
-    Reads the csv file and returns the dataframe.
+    Reads the multiple csv files and combines into one.
+    Obtained from: https://www.kaggle.com/datasets/chuckephron/leagueoflegends/data
 
     Returns:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    df = pd.read_csv('archive/games.csv')
+    LeagueofLegends_df = pd.read_csv('archive/LeagueofLegends.csv')
 
-    # Select predictor variables
-    X = df.drop(['winner'], axis=1)
-    
-    # Select the label
-    y = df['winner']
-
-    return X, y
+process_dataset()
 
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
