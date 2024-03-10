@@ -13,8 +13,13 @@ def get_dataset() -> pd.DataFrame:
     Returns:
         tuple: Returns a predictor dataframe and label dataframe
     """
+    # Read csv
     df = pd.read_csv('archive/games.csv')
+
+    # Select predictor variables
     X = df.drop(['winner'], axis=1)
+    
+    # Select the label
     y = df['winner']
 
     return X, y
@@ -34,7 +39,10 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
 
     validation_split = validation_split/train_split
 
+    # Get train and validation dataset
     X_train, X_validation, y_train, y_validation = train_test_split(X, y, test_size=1-train_split)
+
+    # Get validation and test dataset
     X_validation, X_test, y_validation, y_test = train_test_split(X_validation, y_validation, test_size=validation_split)
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
