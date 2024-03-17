@@ -4,6 +4,8 @@ import seaborn as sns
 import numpy as np
 import ast
 import math
+import torch
+from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 
@@ -40,6 +42,26 @@ def read_dataset() -> pd.DataFrame:
 
     return X, y
 
+def get_max_time(X):
+    """Helper function for finding the longest game.
+    O(N) approach
+
+    Args:
+        X (dataframe): X
+
+    Returns:
+        int: returns longest game in minutes
+    """
+    MAX_TIME = 0
+    for index, row in X.iterrows():
+        row = ast.literal_eval(row[0])
+        time = len(row)
+        
+        if time > MAX_TIME:
+            MAX_TIME = time
+        
+    return MAX_TIME
+
 def process_time(game_length, events):
     """
     Helper function
@@ -59,7 +81,7 @@ def process_time(game_length, events):
 
     return timeline
 
-def process_dataset(save_csv=False) -> pd.DataFrame:
+def process_dataset(X, save_csv=False) -> pd.DataFrame:
     """
     Process the data so that it is readable by Pandas and PyTorch.
     Also populates uneventful periods.
@@ -67,9 +89,6 @@ def process_dataset(save_csv=False) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Readable version of dataframe
     """
-    # Read dataset
-    X, y = read_dataset()
-
     # Create new dataframe to append new columns to.
     new_X = pd.DataFrame(columns=X.columns)
 
@@ -93,7 +112,7 @@ def process_dataset(save_csv=False) -> pd.DataFrame:
     if save_csv:
         new_X.to_csv('processed_X.csv')
 
-    return new_X, y
+    return new_X
 
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
@@ -118,7 +137,19 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
-# print(test_train())
+def to_tensor(X,y):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+    # X = DataLoader(dataset=X, batch_size=60)
+    # y = DataLoader(dataset=y, batch_size=60)
+    print(torch.Tensor(X.values))
+    print(X.shape, y.shape)
+
+    df = TensorDataset(X, y)
+
+# X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
+# y = read_dataset()[1]
+# to_tensor(X, y)
 
 def plot_correlation_matrix() -> None:
     """
