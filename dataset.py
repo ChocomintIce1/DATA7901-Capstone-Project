@@ -59,7 +59,7 @@ def process_time(game_length, events):
 
     return timeline
 
-def process_dataset() -> pd.DataFrame:
+def process_dataset(save_csv=False) -> pd.DataFrame:
     """
     Process the data so that it is readable by Pandas and PyTorch.
     Also populates uneventful periods.
@@ -71,22 +71,29 @@ def process_dataset() -> pd.DataFrame:
     X, y = read_dataset()
 
     # Create new dataframe to append new columns to.
-    new_X = pd.DataFrame()
+    new_X = pd.DataFrame(columns=X.columns)
 
     for index0, row in X.iterrows():
-        game_length = 0
+        new_row = []
+
         for index1, col in enumerate(row):
             game_length = len(col) if index1 == 0 else game_length # get game length
             col = ast.literal_eval(col) # convert str to list
 
-            print(X.columns[index1])
-            print(process_time(game_length, col) if 'gold' not in X.columns[index1] else None)
+            # If column is gold related, no modification needed
+            if 'gold' in X.columns[index1]:
+                new_row.append(col)
 
-        break
+            else:   
+                new_row.append(process_time(game_length, col))
+        
+        # Append new row to the new dataframe
+        new_X.loc[index0] = new_row
+
+    if save_csv:
+        new_X.to_csv('processed_X.csv')
 
     return new_X, y
-
-process_dataset()
 
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
