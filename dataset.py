@@ -38,6 +38,21 @@ def read_dataset() -> pd.DataFrame:
 
     return X, y
 
+def process_dataset() -> pd.DataFrame:
+    """
+    Process the data so that it is readable by Pandas and PyTorch.
+
+    Returns:
+        pd.DataFrame: Readable version of dataframe
+    """
+    # Read dataset
+    X, y = read_dataset()
+
+    # Create new dataframe to append new columns to.
+    new_X = pd.DataFrame()
+
+    return new_X, y
+
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
     Creates training, validation and testing datasets.
