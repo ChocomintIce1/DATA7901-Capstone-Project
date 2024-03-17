@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import ast
+import math
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 
@@ -38,9 +40,29 @@ def read_dataset() -> pd.DataFrame:
 
     return X, y
 
+def process_time(game_length, events):
+    """
+    Helper function
+
+    Args:
+        game_length (int): Length of the game in minutes
+        events (list): a timeline of where a team gets an objective.
+
+    Returns:
+        list: A readable form of events that occured in that game
+    """
+    timeline = np.zeros(game_length)
+
+    for event in events:
+        event_time = math.floor(event[0])
+        timeline[event_time] += 1
+
+    return timeline
+
 def process_dataset() -> pd.DataFrame:
     """
     Process the data so that it is readable by Pandas and PyTorch.
+    Also populates uneventful periods.
 
     Returns:
         pd.DataFrame: Readable version of dataframe
@@ -51,7 +73,20 @@ def process_dataset() -> pd.DataFrame:
     # Create new dataframe to append new columns to.
     new_X = pd.DataFrame()
 
+    for index0, row in X.iterrows():
+        game_length = 0
+        for index1, col in enumerate(row):
+            game_length = len(col) if index1 == 0 else game_length # get game length
+            col = ast.literal_eval(col) # convert str to list
+
+            print(X.columns[index1])
+            print(process_time(game_length, col) if 'gold' not in X.columns[index1] else None)
+
+        break
+
     return new_X, y
+
+process_dataset()
 
 def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
     """
@@ -76,7 +111,7 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
-print(test_train())
+# print(test_train())
 
 def plot_correlation_matrix() -> None:
     """
