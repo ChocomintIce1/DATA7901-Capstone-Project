@@ -150,31 +150,3 @@ def to_tensor(X,y):
 # X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
 # y = read_dataset()[1]
 # to_tensor(X, y)
-
-def plot_correlation_matrix() -> None:
-    """
-    Reference: https://seaborn.pydata.org/examples/many_pairwise_correlations.html
-    Plots the correlation matrix between the predictor variables
-
-    Returns:
-        None
-    """
-    X, _ = get_dataset()
-
-    # Set theme
-    sns.set_theme(style="white")
-
-    # Compute correlation matrix
-    corr = X.corr()
-
-    # Generate a mask for the upper triangle
-    mask = np.triu(np.ones_like(corr, dtype=bool))
-
-    # Generate a custom diverging colormap
-    cmap = sns.diverging_palette(230, 20, as_cmap=True)
-
-    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
-            square=True, linewidths=.5, cbar_kws={"shrink": .5})
-    
-    # Plot graph
-    plt.show()
