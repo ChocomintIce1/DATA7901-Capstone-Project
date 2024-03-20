@@ -189,25 +189,13 @@ class LeagueDataset(torch.utils.data.Dataset):
             return len(self.labels)
 
         def __getitem__(self, index):
-            return torch.tensor(self.data.iloc[index, :])
-        
-X, y = read_dataset()
-X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
-print(X)
+            return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.labels[index])
 
-# X = process_dataset(X, save_csv=True)
+# Debugging stuff
+# X, y = read_dataset()
+# X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
+# print(X)
 
-d = LeagueDataset(X,y)
-
-X_list = list(X.iloc[0,:])[1:]
-# print(X_list)
-
-# for x in X_list:
-#     print('printing line:', x, '\n')
-#     print(ast.literal_eval(x))
-# test = torch.tensor([[1,1,1],[1,1,1,1],[1,1,1]])
-# print(test)
-
-result = [ast.literal_eval(item) for item in X_list]
-
-print(torch.tensor([ast.literal_eval(item) for item in X_list]))
+# X = X.iloc[1,:]
+# lst = [ast.literal_eval(x) for x in X]
+# print(torch.tensor(lst))
