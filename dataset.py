@@ -142,47 +142,9 @@ def test_train(X, y, train_split=0.7, validation_split=0.2, normalise=True) -> p
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
-def to_tensor(X,y):
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    # X = DataLoader(dataset=X, batch_size=60)
-    # y = DataLoader(dataset=y, batch_size=60)
-    print(torch.Tensor(X.values))
-    print(X.shape, y.shape)
-
-    df = TensorDataset(X, y)
-
-# X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
-# y = read_dataset()[1]
-# to_tensor(X, y)
-
 class LeagueDataset(torch.utils.data.Dataset):
     def __init__(self, data, label):
         self.data = data
-
-        # self.golddiff = data['golddiff']
-        # self.bKills = data['bKills']
-        # self.bTowers = data['bTowers']
-        # self.bInhibs = data['bInhibs']
-        # self.bDragons = data['bDragons']
-        # self.bBarons = data['bBarons']
-        # self.bHeralds = data['bHeralds']
-        # self.rKills = data['rKills']
-        # self.rTowers = data['rTowers']
-        # self.rInhibs = data['rInhibs']
-        # self.rDragons = data['rDragons']
-        # self.rBarons = data['rBarons']
-        # self.rHeralds = data['rHeralds']
-        # self.goldblueTop = data['goldblueTop']
-        # self.goldblueJungle = data['goldblueJungle']
-        # self.goldblueMiddle = data['goldblueMiddle']
-        # self.goldblueADC = data['goldblueADC']
-        # self.goldblueSupport = data['goldblueSupport']
-        # self.goldredTop = data['goldredTop']
-        # self.goldredJungle = data['goldredJungle']
-        # self.goldredMiddle = data['goldredMiddle']
-        # self.goldredADC = data['goldredADC']
-        # self.goldredSupport = data['goldredSupport']
         self.label = label
 
         def __len__(self):
