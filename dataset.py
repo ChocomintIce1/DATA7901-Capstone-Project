@@ -19,7 +19,7 @@ def read_dataset() -> pd.DataFrame:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    df = pd.read_csv('archive/LeagueofLegends.csv')
+    df = pd.read_csv(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\archive\LeagueofLegends.csv')
 
     # Clean up dataset
 
@@ -73,7 +73,7 @@ def process_time(game_length, events):
     Returns:
         list: A readable form of events that occured in that game
     """
-    timeline = np.zeros(game_length)
+    timeline = [0] * game_length
 
     for event in events:
         event_time = math.floor(event[0])
@@ -94,27 +94,34 @@ def process_dataset(X, save_csv=False) -> pd.DataFrame:
 
     for index0, row in X.iterrows():
         new_row = []
+        game_length = 0
 
         for index1, col in enumerate(row):
-            game_length = len(col) if index1 == 0 else game_length # get game length
             col = ast.literal_eval(col) # convert str to list
 
+            # get game length
+            if index1 == 0:
+                game_length = len(col)
+
+            
             # If column is gold related, no modification needed
             if 'gold' in X.columns[index1]:
                 new_row.append(col)
 
-            else:   
+            else:
                 new_row.append(process_time(game_length, col))
         
         # Append new row to the new dataframe
         new_X.loc[index0] = new_row
 
     if save_csv:
-        new_X.to_csv('processed_X.csv')
+        print('saved csv')
+        new_X.to_csv(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\processed_X.csv', index_label=False)
 
     return new_X
 
-def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
+def test_train(X, y, train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
+
     """
     Creates training, validation and testing datasets.
     Initially configured to a 70-20-10 split
@@ -122,8 +129,6 @@ def test_train(train_split=0.7, validation_split=0.2, normalise=True) -> pd.Data
     Returns:
         tuple: Returns a tuple of (X_train, X_validation, ..., y_test) 
     """
-    X, y = read_dataset()
-
     if normalise:
         ...
 
@@ -150,3 +155,59 @@ def to_tensor(X,y):
 # X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
 # y = read_dataset()[1]
 # to_tensor(X, y)
+
+class LeagueDataset(torch.utils.data.Dataset):
+    def __init__(self, data, label):
+        self.data = data
+
+        # self.golddiff = data['golddiff']
+        # self.bKills = data['bKills']
+        # self.bTowers = data['bTowers']
+        # self.bInhibs = data['bInhibs']
+        # self.bDragons = data['bDragons']
+        # self.bBarons = data['bBarons']
+        # self.bHeralds = data['bHeralds']
+        # self.rKills = data['rKills']
+        # self.rTowers = data['rTowers']
+        # self.rInhibs = data['rInhibs']
+        # self.rDragons = data['rDragons']
+        # self.rBarons = data['rBarons']
+        # self.rHeralds = data['rHeralds']
+        # self.goldblueTop = data['goldblueTop']
+        # self.goldblueJungle = data['goldblueJungle']
+        # self.goldblueMiddle = data['goldblueMiddle']
+        # self.goldblueADC = data['goldblueADC']
+        # self.goldblueSupport = data['goldblueSupport']
+        # self.goldredTop = data['goldredTop']
+        # self.goldredJungle = data['goldredJungle']
+        # self.goldredMiddle = data['goldredMiddle']
+        # self.goldredADC = data['goldredADC']
+        # self.goldredSupport = data['goldredSupport']
+        self.label = label
+
+        def __len__(self):
+            return len(self.labels)
+
+        def __getitem__(self, index):
+            return torch.tensor(self.data.iloc[index, :])
+        
+X, y = read_dataset()
+X = pd.read_csv(r'C:\Users\Jae\Desktop\processed_X.csv')
+print(X)
+
+# X = process_dataset(X, save_csv=True)
+
+d = LeagueDataset(X,y)
+
+X_list = list(X.iloc[0,:])[1:]
+# print(X_list)
+
+# for x in X_list:
+#     print('printing line:', x, '\n')
+#     print(ast.literal_eval(x))
+# test = torch.tensor([[1,1,1],[1,1,1,1],[1,1,1]])
+# print(test)
+
+result = [ast.literal_eval(item) for item in X_list]
+
+print(torch.tensor([ast.literal_eval(item) for item in X_list]))
