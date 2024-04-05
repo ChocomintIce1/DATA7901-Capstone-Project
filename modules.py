@@ -8,5 +8,10 @@ class RNN(nn.Module):
     The model for Recurrent Neural Network using PyTorch.
     """
 
-    def __init__(self):
+    def __init__(self, hidden_size):
         super(RNN, self).__init__()
+
+        self.hidden_size = hidden_size
+    
+    def forward(self, input, hidden):
+        ...
