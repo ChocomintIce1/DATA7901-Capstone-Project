@@ -123,6 +123,27 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
 
     return new_X
 
+def read_processed_dataset(df=r'C:\Users\Jae\Desktop\processed_X.csv') -> pd.DataFrame:
+    """
+    To speed up execution, simply convert the dataset to a readable dataset.
+
+    Args:
+        df (str): The directory of the dataset. Defaults to r'C:\Users\Jae\Desktop\processed_X.csv'.
+
+    Returns:
+        dataframe: Returns the transformed dataset
+    """
+    df = pd.read_csv(df)
+
+    # for col, _ in enumerate(df.columns):
+    #     for row, _ in df.iterrows():
+    #         df.iloc[row,col] = ast.literal_eval(df.iloc[row,col])
+
+    for col in df.columns:
+        df[col] = df[col].apply(ast.literal_eval)
+
+    return df
+
 def test_train(X, y, train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
 
     """
@@ -175,3 +196,4 @@ class LeagueDataset(torch.utils.data.Dataset):
 # X = X.iloc[1,:]
 # lst = [ast.literal_eval(x) for x in X]
 # print(torch.tensor(lst))
+print(read_processed_dataset())
