@@ -143,7 +143,18 @@ def test_train(X, y, train_split=0.7, validation_split=0.2, normalise=True) -> p
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
 class LeagueDataset(torch.utils.data.Dataset):
+    """
+    Creates a dataset that handles the temporal data and allows Torch to read
+    the data by converting the dataset to a Tensor.
+    """
     def __init__(self, data, label):
+        """
+        Initilaiser for class.
+
+        Args:
+            data (List): Returns the game data based on index
+            label (List): The match outcome
+        """
         self.data = data
         self.label = label
 
