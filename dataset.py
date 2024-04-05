@@ -19,7 +19,7 @@ def read_dataset() -> pd.DataFrame:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    df = pd.read_csv(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\archive\LeagueofLegends.csv')
+    df = pd.read_csv('C:/Users/Jae/iCloudDrive/DATA7901/Project/DATA7901-Capstone-Project/archive/LeagueofLegends.csv')
 
     # Clean up dataset
 
@@ -119,20 +119,20 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
 
     if save_csv:
         print('saved csv')
-        new_X.to_csv(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\processed_X.csv', index_label=False)
+        new_X.to_csv('C:/Users/Jae/iCloudDrive/DATA7901/Project/DATA7901-Capstone-Project/processed_X.csv', index_label=False)
 
     return new_X
 
-def read_processed_dataset(df=r'C:\Users\Jae\Desktop\processed_X.csv') -> pd.DataFrame:
-    """
+def read_processed_dataset(df='C:/Users/Jae/Desktop/processed_X.csv') -> pd.DataFrame:
+    '''
     To speed up execution, simply convert the dataset to a readable dataset.
 
     Args:
-        df (str): The directory of the dataset. Defaults to r'C:\Users\Jae\Desktop\processed_X.csv'.
+        df (str): The directory of the dataset. Defaults to r'C:/Users/Jae/Desktop/processed_X.csv'.
 
     Returns:
         dataframe: Returns the transformed dataset
-    """
+    '''
     df = pd.read_csv(df)
 
     # for col, _ in enumerate(df.columns):
@@ -145,7 +145,6 @@ def read_processed_dataset(df=r'C:\Users\Jae\Desktop\processed_X.csv') -> pd.Dat
     return df
 
 def test_train(X, y, train_split=0.7, validation_split=0.2, normalise=True) -> pd.DataFrame:
-
     """
     Creates training, validation and testing datasets.
     Initially configured to a 70-20-10 split
@@ -196,4 +195,4 @@ class LeagueDataset(torch.utils.data.Dataset):
 # X = X.iloc[1,:]
 # lst = [ast.literal_eval(x) for x in X]
 # print(torch.tensor(lst))
-print(read_processed_dataset())
+# print(read_processed_dataset())

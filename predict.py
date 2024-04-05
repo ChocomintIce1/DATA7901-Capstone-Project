@@ -3,6 +3,6 @@ from modules import RNN
 
 
 # Load data
-df = process_dataset()
+df = read_processed_dataset()
 
 # league_dataset = LeagueDataset()
