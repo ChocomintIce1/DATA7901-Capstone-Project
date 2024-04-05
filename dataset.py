@@ -81,7 +81,7 @@ def process_time(game_length, events):
 
     return timeline
 
-def process_dataset(X, save_csv=False) -> pd.DataFrame:
+def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
     """
     Process the data so that it is readable by Pandas and PyTorch.
     Also populates uneventful periods.
@@ -89,6 +89,9 @@ def process_dataset(X, save_csv=False) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Readable version of dataframe
     """
+    if X == None:
+        X,_ = read_dataset()
+
     # Create new dataframe to append new columns to.
     new_X = pd.DataFrame(columns=X.columns)
 
