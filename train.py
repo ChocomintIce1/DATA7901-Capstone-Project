@@ -1,7 +1,7 @@
 import torch
 from dataset import *
 from modules import RNN
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, random_split
 
 
 # Load data
@@ -17,3 +17,14 @@ test_size = n - train_size - validation_size
 
 train_set, validation_set, test_set = random_split(dataset=league_dataset,
                                                 lengths=[train_size,validation_size,test_size])
+
+train_set = DataLoader(train_set, batch_size=32)
+validation_set = DataLoader(validation_set, batch_size=32)
+test_set = DataLoader(test_set, batch_size=32)
+
+# Create model
+lr = 0.001
+hidden_size = 128
+
+rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
+optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
