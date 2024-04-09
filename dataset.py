@@ -185,7 +185,7 @@ class LeagueDataset(torch.utils.data.Dataset):
         return self.label.shape[0]
 
     def __getitem__(self, index):
-        return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.labels[index])
+        return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.labels.iloc[index])
 
 # Debugging stuff
 # X, y = read_dataset()

@@ -9,7 +9,7 @@ X = read_processed_dataset()
 y = read_dataset()[1]
 
 league_dataset = LeagueDataset(X,y)
-print('league_dataset len:', len(league_dataset))
+
 n = y.shape[0]
 train_size = int(0.7*n)
 validation_size = int(0.2*n)
