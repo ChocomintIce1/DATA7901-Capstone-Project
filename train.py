@@ -28,3 +28,10 @@ hidden_size = 128
 
 rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
+
+# Training
+def train(category_tensor, line_tensor):
+    rnn.zero_grad()
+
+    for i in range(category_tensor.size()[0]):
+        ...

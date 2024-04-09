@@ -123,7 +123,7 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
 
     return new_X
 
-def read_processed_dataset(df='C:/Users/Jae/Desktop/processed_X.csv') -> pd.DataFrame:
+def read_processed_dataset(df='C:/Users/Jae/Desktop/processed_X - Copy.csv') -> pd.DataFrame:
     '''
     To speed up execution, simply convert the dataset to a readable dataset.
 
