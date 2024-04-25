@@ -1,4 +1,5 @@
 import torch
+import pandas as pd
 from dataset import *
 from modules import RNN
 from torch.utils.data import DataLoader, random_split
@@ -6,7 +7,8 @@ from torch.utils.data import DataLoader, random_split
 
 # Load data
 X = read_processed_dataset()
-y = read_dataset()[1]
+# y = read_dataset()[1]
+y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1])
 
 league_dataset = LeagueDataset(X,y)
 
@@ -16,14 +18,17 @@ train_size = int(0.7*n)
 validation_size = int(0.2*n)
 test_size = n - train_size - validation_size
 
+# print(y)
+# print(X.shape, train_size, validation_size, test_size)
+
 # Split dataset
 train_set, validation_set, test_set = random_split(dataset=league_dataset,
                                                 lengths=[train_size,validation_size,test_size])
 
 # Data loader
-train_set = DataLoader(train_set, batch_size=32)
-validation_set = DataLoader(validation_set, batch_size=32)
-test_set = DataLoader(test_set, batch_size=32)
+train_set = DataLoader(train_set, batch_size=1)
+validation_set = DataLoader(validation_set, batch_size=1)
+test_set = DataLoader(test_set, batch_size=1)
 
 # Create model
 lr = 0.001
@@ -32,6 +37,17 @@ hidden_size = 128
 rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
+
+# Training model
+epochs = 3
+
+for epoch in range(epochs):
+    for index, (data, outcome) in enumerate(train_set):
+        # train = torch.autograd.Variable(data)
+        print(data)
+        break
+    break
+
 
 # Training
 # def train(dataloader, model, loss_fn, optimiser):

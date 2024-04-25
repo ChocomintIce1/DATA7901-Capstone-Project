@@ -139,8 +139,9 @@ def read_processed_dataset(df='C:/Users/Jae/Desktop/processed_X - Copy.csv') -> 
     #     for row, _ in df.iterrows():
     #         df.iloc[row,col] = ast.literal_eval(df.iloc[row,col])
 
-    for col in df.columns:
-        df[col] = df[col].apply(ast.literal_eval)
+    # for col in df.columns:
+    #     df[col] = df[col].apply(ast.literal_eval)
+    #     print(col, df[col])
 
     return df
 
@@ -185,7 +186,7 @@ class LeagueDataset(torch.utils.data.Dataset):
         return self.label.shape[0]
 
     def __getitem__(self, index):
-        return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.labels.iloc[index])
+        return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.label.iloc[index])
 
 # Debugging stuff
 # X, y = read_dataset()
