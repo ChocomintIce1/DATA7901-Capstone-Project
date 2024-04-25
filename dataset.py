@@ -91,6 +91,8 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
     """
     if X == None:
         X,_ = read_dataset()
+    
+    # Max time length in dataset
 
     # Create new dataframe to append new columns to.
     new_X = pd.DataFrame(columns=X.columns)
@@ -186,7 +188,8 @@ class LeagueDataset(torch.utils.data.Dataset):
         return self.label.shape[0]
 
     def __getitem__(self, index):
-        return torch.tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]), torch.tensor(self.label.iloc[index])
+        return (torch.Tensor([ast.literal_eval(data) for data in self.data.iloc[index, :]]),
+                torch.Tensor(self.label.iloc[index]))
 
 # Debugging stuff
 # X, y = read_dataset()
