@@ -28,10 +28,24 @@ hidden_size = 128
 
 rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
+loss_function = torch.nn.CrossEntropyLoss()
 
 # Training
-def train(category_tensor, line_tensor):
-    rnn.zero_grad()
+# def train(dataloader, model, loss_fn, optimiser):
+#     size = len(dataloader.dataset)
 
-    for i in range(category_tensor.size()[0]):
-        ...
+#     for batch, (X,y) in enumerate(dataloader):
+#         X,y = torch.autograd.Variable(X), torch.autograd.Variable(y)
+        
+#         predict = model(X)
+#         loss = loss_fn(predict, y)
+
+#         optimiser.zero_grad()
+#         loss.backward()
+#         optimiser.step()
+
+#         loss, current = loss.item(), batch*len(X)
+#         print(f'loss: {loss} [{current}/{size}]')
+
+# for epoch in range(1,31):
+#     train(train_set, rnn, loss_function, optimiser)
