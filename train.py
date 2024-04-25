@@ -42,11 +42,20 @@ loss_function = torch.nn.CrossEntropyLoss()
 epochs = 3
 
 for epoch in range(epochs):
-    for index, (data, outcome) in enumerate(train_set):
-        # train = torch.autograd.Variable(data)
-        print(data)
-        break
-    break
+    for batch, (data, outcome) in enumerate(train_set):
+        train = torch.autograd.Variable(data)
+        outcome = torch.autograd.Variable(outcome)
+
+        predict = rnn(X)
+        loss = loss_function(predict, y)
+
+        optimiser.zero_grad()
+        loss.backward()
+        optimiser.step()
+
+        loss, current = loss.item(), batch*len(X)
+        print(f'loss: {loss} [{current}/{10}]')
+
 
 
 # Training
