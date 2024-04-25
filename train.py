@@ -10,14 +10,17 @@ y = read_dataset()[1]
 
 league_dataset = LeagueDataset(X,y)
 
+# Get size of splitting datasets
 n = y.shape[0]
 train_size = int(0.7*n)
 validation_size = int(0.2*n)
 test_size = n - train_size - validation_size
 
+# Split dataset
 train_set, validation_set, test_set = random_split(dataset=league_dataset,
                                                 lengths=[train_size,validation_size,test_size])
 
+# Data loader
 train_set = DataLoader(train_set, batch_size=32)
 validation_set = DataLoader(validation_set, batch_size=32)
 test_set = DataLoader(test_set, batch_size=32)
