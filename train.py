@@ -34,6 +34,7 @@ test_set = DataLoader(test_set, batch_size=1)
 lr = 0.001
 hidden_size = 128
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
@@ -42,11 +43,11 @@ loss_function = torch.nn.CrossEntropyLoss()
 epochs = 3
 
 for epoch in range(epochs):
-    for batch, (data, outcome) in enumerate(train_set):
-        train = torch.autograd.Variable(data)
+    for batch, (train, outcome) in enumerate(train_set):
+        train = torch.autograd.Variable(train)
         outcome = torch.autograd.Variable(outcome)
 
-        predict = rnn(X)
+        predict = rnn(train)
         loss = loss_function(predict, y)
 
         optimiser.zero_grad()

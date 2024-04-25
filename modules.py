@@ -12,13 +12,21 @@ class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(RNN, self).__init__()
 
+        self.input_size = input_size
         self.hidden_size = hidden_size
+        self.output_size = output_size
+
+        self.rnn = nn.RNN(input_size, hidden_size, num_layers=1)
 
         self.layer1 = nn.Linear(input_size, hidden_size)
         self.layer2 = nn.Linear(hidden_size, output_size)
     
-    def forward(self, input, hidden):
-        hidden = self.layer1(input)
-        output = self.layer2(hidden)
+    def forward(self, x):
+        # Initialise hidden state with zeros
+        hidden0 = torch.autograd.Variable(torch.zeros(1, self.input_size, self.hidden_size))
 
-        return hidden, output
+        # One time step
+        output, hidden = self.rnn(x, hidden0)
+        output = self.layer2(output[:, -1, :])
+
+        return output
