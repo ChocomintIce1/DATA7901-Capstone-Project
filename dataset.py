@@ -73,10 +73,9 @@ def process_time(game_length, events, max_time):
     Returns:
         list: A readable form of events that occured in that game
     """
-    timeline = [0] * max_time
+    timeline = [0] * game_length
 
     for event in events:
-        # print('event', event)
         event_time = math.floor(event[0])
         timeline[event_time] += 1
     

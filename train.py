@@ -9,6 +9,9 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
 X = read_processed_dataset()
+# X = process_dataset(save_csv=True)
+
+max_time = get_max_time(X)
 
 _,y = read_dataset()
 
@@ -42,7 +45,7 @@ test_set = DataLoader(test_set, batch_size=1)
 lr = 0.001
 hidden_size = 128
 
-rnn = RNN(input_size=X.shape[1], hidden_size=hidden_size, output_size=2)
+rnn = RNN(input_size=max_time, hidden_size=hidden_size, output_size=2)
 rnn = rnn.to(device)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
