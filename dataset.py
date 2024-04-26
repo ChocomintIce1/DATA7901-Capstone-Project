@@ -62,7 +62,7 @@ def get_max_time(X):
         
     return MAX_TIME
 
-def process_time(game_length, events):
+def process_time(game_length, events, max_time):
     """
     Helper function
 
@@ -73,11 +73,16 @@ def process_time(game_length, events):
     Returns:
         list: A readable form of events that occured in that game
     """
-    timeline = [0] * game_length
+    timeline = [0] * max_time
 
     for event in events:
+        # print('event', event)
         event_time = math.floor(event[0])
         timeline[event_time] += 1
+    
+    # Fill the rest of timeline with the last event
+    for time in range(game_length, max_time):
+        timeline.append(timeline[game_length - 1])
 
     return timeline
 
@@ -89,39 +94,47 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Readable version of dataframe
     """
-    if X == None:
+    if X is None:
         X,_ = read_dataset()
     
     # Max time length in dataset
+    max_time = get_max_time(X)
 
     # Create new dataframe to append new columns to.
     new_X = pd.DataFrame(columns=X.columns)
 
+    # Iterate through every row
     for index0, row in X.iterrows():
         new_row = []
         game_length = 0
 
+        # Iterate through every feature
         for index1, col in enumerate(row):
             col = ast.literal_eval(col) # convert str to list
 
             # get game length
             if index1 == 0:
                 game_length = len(col)
-
+            
             
             # If column is gold related, no modification needed
             if 'gold' in X.columns[index1]:
+                # Fill the rest of timeline with the last event
+                for time in range(game_length, max_time):
+                    col.append(col[game_length - 1])
+                
                 new_row.append(col)
 
+
             else:
-                new_row.append(process_time(game_length, col))
+                new_row.append(process_time(game_length, col, max_time))
         
         # Append new row to the new dataframe
         new_X.loc[index0] = new_row
 
     if save_csv:
         print('saved csv')
-        new_X.to_csv('C:/Users/Jae/iCloudDrive/DATA7901/Project/DATA7901-Capstone-Project/processed_X.csv', index_label=False)
+        new_X.to_csv('C:/Users/Jae/iCloudDrive/DATA7901/Project/DATA7901-Capstone-Project/processed_X1.csv', index_label=False)
 
     return new_X
 

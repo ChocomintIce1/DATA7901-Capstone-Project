@@ -10,6 +10,8 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # Load data
 X = read_processed_dataset()
 
+_,y = read_dataset()
+
 # for col in X.columns:
 #     X[col] = X[col].astype(np.float32)
 
