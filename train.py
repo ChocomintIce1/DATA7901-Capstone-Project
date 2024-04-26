@@ -8,10 +8,9 @@ from torch.utils.data import DataLoader, random_split
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
-X = read_processed_dataset()
-
-# y = read_dataset()[1]
-y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
+X = read_processed_dataset(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\processed_X1.csv')
+y = read_dataset()[1]
+# y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
 
 league_dataset = LeagueDataset(X,y)
 
@@ -29,9 +28,10 @@ train_set, validation_set, test_set = random_split(dataset=league_dataset,
                                                 lengths=[train_size,validation_size,test_size])
 
 # Data loader
-train_set = DataLoader(train_set, batch_size=1)
-validation_set = DataLoader(validation_set, batch_size=1)
-test_set = DataLoader(test_set, batch_size=1)
+batch_size = 32
+train_set = DataLoader(train_set, batch_size=batch_size)
+validation_set = DataLoader(validation_set, batch_size=batch_size)
+test_set = DataLoader(test_set, batch_size=batch_size)
 
 # Create model
 lr = 0.001
@@ -47,21 +47,29 @@ loss_function = torch.nn.CrossEntropyLoss()
 epochs = 3
 
 for epoch in range(epochs):
+    print(f"--------- Epoch #{epoch} ---------")
     for batch, (train, outcome) in enumerate(train_set):
         train = torch.autograd.Variable(train).to(device)
         outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
 
         predict = rnn(train)
-        loss = loss_function(predict, outcome[0])
+        # print('printing shape', predict.size(0), outcome.size(0))
+        # print('predict', predict)
+
+        outcome1 = []
+        for o in outcome:
+            outcome1.append(o)
+        outcome = torch.LongTensor(outcome1)
+
+        loss = loss_function(predict, outcome)
 
         optimiser.zero_grad()
         loss.backward()
         optimiser.step()
 
-        loss, current = loss.item(), batch*len(X)
-        print(f'loss: {loss} [{current}/{10}]')
-
-
+        if batch % 30 == 0:
+            loss, current = loss.item(), batch*len(X)
+            print(f'loss: {loss} [{current}/{10}]')
 
 # Training
 # def train(dataloader, model, loss_fn, optimiser):
