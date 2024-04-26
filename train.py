@@ -9,14 +9,6 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
 X = read_processed_dataset()
-# X = process_dataset(save_csv=True)
-
-max_time = get_max_time(X)
-
-_,y = read_dataset()
-
-# for col in X.columns:
-#     X[col] = X[col].astype(np.float32)
 
 # y = read_dataset()[1]
 y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
@@ -45,7 +37,8 @@ test_set = DataLoader(test_set, batch_size=1)
 lr = 0.001
 hidden_size = 128
 
-rnn = RNN(input_size=max_time, hidden_size=hidden_size, output_size=2)
+max_time = get_max_time(X)
+rnn = RNN(input_size=max_time, feature_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 rnn = rnn.to(device)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
@@ -56,12 +49,10 @@ epochs = 3
 for epoch in range(epochs):
     for batch, (train, outcome) in enumerate(train_set):
         train = torch.autograd.Variable(train).to(device)
-        outcome = torch.autograd.Variable(outcome).to(device)
-
-        print(train, train.shape)
+        outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
 
         predict = rnn(train)
-        loss = loss_function(predict, y)
+        loss = loss_function(predict, outcome[0])
 
         optimiser.zero_grad()
         loss.backward()
