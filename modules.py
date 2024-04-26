@@ -17,7 +17,7 @@ class RNN(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
 
-        self.rnn = nn.RNN(input_size=input_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True)
+        self.rnn = nn.RNN(input_size=input_size, hidden_size=self.hidden_size, num_layers=1, nonlinearity='relu', batch_first=True)
 
         # self.layer1 = nn.Linear(input_size, output_size)
         self.layer2 = nn.Linear(self.hidden_size, 2)
