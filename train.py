@@ -56,6 +56,7 @@ for epoch in range(epochs):
         # print('printing shape', predict.size(0), outcome.size(0))
         # print('predict', predict)
 
+        # Reformat outcome tensor
         outcome1 = []
         for o in outcome:
             outcome1.append(o)
@@ -69,7 +70,30 @@ for epoch in range(epochs):
 
         if batch % 30 == 0:
             loss, current = loss.item(), batch*len(X)
-            print(f'loss: {loss} [{current}/{10}]')
+            print(f'loss: {loss} [{current}/{len(train_set.dataset)}]')
+    
+    # Testing
+    rnn.eval()
+    size = len(validation_set.dataset)
+
+    correct = 0
+    test_loss = 0
+    with torch.no_grad():
+        for batch, (validation, outcome) in enumerate(validation_set):
+            validation = torch.autograd.Variable(validation).to(device)
+            outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
+
+            # Reformat outcome tensor
+            outcome1 = []
+            for o in outcome:
+                outcome1.append(o)
+            outcome = torch.LongTensor(outcome1)
+
+            predict = rnn(validation)
+            test_loss += loss_function(predict, outcome).item()
+            correct += (predict.argmax(1) == outcome).sum().item()
+
+        print(f"Acc:{correct/size:>7f}, Avg Loss: {test_loss/size:>7f}")
 
 # Training
 # def train(dataloader, model, loss_fn, optimiser):
