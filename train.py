@@ -44,7 +44,7 @@ optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
 
 # Training model
-epochs = 3
+epochs = 10
 
 for epoch in range(epochs):
     print(f"--------- Epoch #{epoch} ---------")
@@ -95,22 +95,9 @@ for epoch in range(epochs):
 
         print(f"Acc:{correct/size:>7f}, Avg Loss: {test_loss/size:>7f}")
 
-# Training
-# def train(dataloader, model, loss_fn, optimiser):
-#     size = len(dataloader.dataset)
+# Save the model
+save_model = True
 
-#     for batch, (X,y) in enumerate(dataloader):
-#         X,y = torch.autograd.Variable(X), torch.autograd.Variable(y)
-        
-#         predict = model(X)
-#         loss = loss_fn(predict, y)
-
-#         optimiser.zero_grad()
-#         loss.backward()
-#         optimiser.step()
-
-#         loss, current = loss.item(), batch*len(X)
-#         print(f'loss: {loss} [{current}/{size}]')
-
-# for epoch in range(1,31):
-#     train(train_set, rnn, loss_function, optimiser)
+if save_model:
+    print('Model saved')
+    torch.save(rnn, 'League_of_Legends_predicition.pt')
