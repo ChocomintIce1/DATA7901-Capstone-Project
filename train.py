@@ -101,4 +101,4 @@ if __name__ == '__main__':
 
     if save_model:
         print('Model saved')
-        torch.save(rnn, 'League_of_Legends_predicition.pt')
+        torch.save(rnn, 'League_of_Legends_predicition1.pt')

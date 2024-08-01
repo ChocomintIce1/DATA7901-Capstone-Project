@@ -9,7 +9,7 @@ from dataset import LeagueDataset
 # Populate game data
 golddiff = '[0, 0, -8, -225, -36, 73, 464, 184, 1171, 1409, 1360, 1414, 1645, 1004, 1891, 2273, 2323, 2496, 1698, 2133, 2659, 2678, 2028, 1949, 2982, 3127, 2443, 411, 253, -689, 1252, 950, -976, -1039, -1283, -1739, -3819, -4302, -5234, -5535, -5383, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323, -5323]'
 
-bKills =' [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
+bKills = '[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
 bTowers = '[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
 bInhibs = '[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
 bDragons = '[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
@@ -43,41 +43,46 @@ game_length = len(ast.literal_eval(golddiff))
 
 game_datasets = []
 for minute in range(1,game_length):
-    game_data = pd.DataFrame([str(ast.literal_eval(golddiff)[:minute]),
+    # TODO: Make all list length of 95
+    game_data = pd.DataFrame([
+        str(ast.literal_eval(golddiff)[:minute]),
 
-                            str(ast.literal_eval(bKills)[:minute]),
-                            str(ast.literal_eval(bTowers)[:minute]),
-                            str(ast.literal_eval(bInhibs)[:minute]),
-                            str(ast.literal_eval(bDragons)[:minute]),
-                            str(ast.literal_eval(bBarons)[:minute]),
-                            str(ast.literal_eval(bHeralds)[:minute]),
+        str(ast.literal_eval(bKills)[:minute]),
+        str(ast.literal_eval(bTowers)[:minute]),
+        str(ast.literal_eval(bInhibs)[:minute]),
+        str(ast.literal_eval(bDragons)[:minute]),
+        str(ast.literal_eval(bBarons)[:minute]),
+        str(ast.literal_eval(bHeralds)[:minute]),
 
-                            str(ast.literal_eval(rKills)[:minute]),
-                            str(ast.literal_eval(rTowers)[:minute]),
-                            str(ast.literal_eval(rInhibs)[:minute]),
-                            str(ast.literal_eval(rDragons)[:minute]),
-                            str(ast.literal_eval(rBarons)[:minute]),
-                            str(ast.literal_eval(rHeralds)[:minute]),
+        str(ast.literal_eval(rKills)[:minute]),
+        str(ast.literal_eval(rTowers)[:minute]),
+        str(ast.literal_eval(rInhibs)[:minute]),
+        str(ast.literal_eval(rDragons)[:minute]),
+        str(ast.literal_eval(rBarons)[:minute]),
+        str(ast.literal_eval(rHeralds)[:minute]),
 
-                            str(ast.literal_eval(goldblueTop)[:minute]),
-                            str(ast.literal_eval(goldblueJungle)[:minute]),
-                            str(ast.literal_eval(goldblueMiddle)[:minute]),
-                            str(ast.literal_eval(goldblueADC)[:minute]),
-                            str(ast.literal_eval(goldblueSupport)[:minute]),
+        str(ast.literal_eval(goldblueTop)[:minute]),
+        str(ast.literal_eval(goldblueJungle)[:minute]),
+        str(ast.literal_eval(goldblueMiddle)[:minute]),
+        str(ast.literal_eval(goldblueADC)[:minute]),
+        str(ast.literal_eval(goldblueSupport)[:minute]),
 
-                            str(ast.literal_eval(goldredTop)[:minute]),
-                            str(ast.literal_eval(goldredJungle)[:minute]),
-                            str(ast.literal_eval(goldredMiddle)[:minute]),
-                            str(ast.literal_eval(goldredADC)[:minute]),
-                            str(ast.literal_eval(goldredSupport)[:minute])
-                            ])
+        str(ast.literal_eval(goldredTop)[:minute]),
+        str(ast.literal_eval(goldredJungle)[:minute]),
+        str(ast.literal_eval(goldredMiddle)[:minute]),
+        str(ast.literal_eval(goldredADC)[:minute]),
+        str(ast.literal_eval(goldredSupport)[:minute])
+    ])
+
+    # Test
+    # game_data = pd.DataFrame([[str([5] * 95) for _ in range(23)]])
+
     game_data = LeagueDataset(game_data, pd.DataFrame([0]))
     game_data = DataLoader(game_data, batch_size=1)
     game_datasets.append(game_data)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\
-                Project\DATA7901-Capstone-Project\League_of_Legends_predicition.pt')
+rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition1.pt')
 for game_data in game_datasets:
     for data, outcome in game_data:
         data = torch.autograd.Variable(data).to(device)
@@ -85,8 +90,17 @@ for game_data in game_datasets:
 
         result = rnn(data)
 
-        blue_prob = int(result[0][0])
-        red_prob = int(result[0][1])
+        blue_prob = result[0][0].item()
+        red_prob = result[0][1].item()
+
+        # if negative score
+        if blue_prob < 0:
+            red_prob += -2 * blue_prob
+            blue_prob = -blue_prob
+
+        elif red_prob < 0:
+            blue_prob += -2 * red_prob
+            red_prob = -red_prob
 
         print('blue prob:', blue_prob/(blue_prob+red_prob), 'red prob:', red_prob/(blue_prob+red_prob))
         # break
