@@ -1,5 +1,6 @@
 import torch
 import pandas as pd
+import ast
 from train import test_set
 from torch.utils.data import DataLoader
 from dataset import LeagueDataset
@@ -37,17 +38,61 @@ goldredADC = '[500, 500, 587, 954, 1327, 1749, 2007, 2471, 2848, 3195, 3530, 390
 goldredSupport = '[500, 500, 585, 793, 998, 1201, 1373, 1619, 1835, 2005, 2184, 2437, 2655, 3287, 3551, 3884, 4192, 4356, 4888, 5203, 5464, 5823, 6182, 6447, 6777, 6980, 7256, 7729, 8088, 8456, 8628, 8943, 9482, 9780, 10061, 10366, 11135, 11374, 11947, 12377, 12673, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117, 13117]'
 
 
-# Create
-game_data = pd.DataFrame([golddiff ,bKills,bTowers,bInhibs,bDragons,bBarons,bHeralds,rKills,rTowers,rInhibs,rDragons,rBarons,rHeralds
-            ,goldblueTop,goldblueJungle,goldblueMiddle,goldblueADC,goldblueSupport,goldredTop,goldredJungle,goldredMiddle,goldredADC,goldredSupport])
-game_data = LeagueDataset(game_data, pd.DataFrame([0]))
-game_data = DataLoader(game_data, batch_size=1)
+# Create sequential dataset
+game_length = len(ast.literal_eval(golddiff))
 
+game_datasets = []
+for minute in range(1,game_length):
+    game_data = pd.DataFrame([str(ast.literal_eval(golddiff)[:minute]),
+
+                            str(ast.literal_eval(bKills)[:minute]),
+                            str(ast.literal_eval(bTowers)[:minute]),
+                            str(ast.literal_eval(bInhibs)[:minute]),
+                            str(ast.literal_eval(bDragons)[:minute]),
+                            str(ast.literal_eval(bBarons)[:minute]),
+                            str(ast.literal_eval(bHeralds)[:minute]),
+
+                            str(ast.literal_eval(rKills)[:minute]),
+                            str(ast.literal_eval(rTowers)[:minute]),
+                            str(ast.literal_eval(rInhibs)[:minute]),
+                            str(ast.literal_eval(rDragons)[:minute]),
+                            str(ast.literal_eval(rBarons)[:minute]),
+                            str(ast.literal_eval(rHeralds)[:minute]),
+
+                            str(ast.literal_eval(goldblueTop)[:minute]),
+                            str(ast.literal_eval(goldblueJungle)[:minute]),
+                            str(ast.literal_eval(goldblueMiddle)[:minute]),
+                            str(ast.literal_eval(goldblueADC)[:minute]),
+                            str(ast.literal_eval(goldblueSupport)[:minute]),
+
+                            str(ast.literal_eval(goldredTop)[:minute]),
+                            str(ast.literal_eval(goldredJungle)[:minute]),
+                            str(ast.literal_eval(goldredMiddle)[:minute]),
+                            str(ast.literal_eval(goldredADC)[:minute]),
+                            str(ast.literal_eval(goldredSupport)[:minute])
+                            ])
+    game_data = LeagueDataset(game_data, pd.DataFrame([0]))
+    game_data = DataLoader(game_data, batch_size=1)
+    game_datasets.append(game_data)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-rnn = torch.load(r'C:\Users\Jae\iCloudDrive\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition.pt')
-for data, outcome in game_data:
-    data = torch.autograd.Variable(data).to(device)
-    outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
+rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\
+                Project\DATA7901-Capstone-Project\League_of_Legends_predicition.pt')
+for game_data in game_datasets:
+    for data, outcome in game_data:
+        data = torch.autograd.Variable(data).to(device)
+        outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
 
-    print(rnn(data))
+        result = rnn(data)
+
+        blue_prob = int(result[0][0])
+        red_prob = int(result[0][1])
+
+        print('blue prob:', blue_prob/(blue_prob+red_prob), 'red prob:', red_prob/(blue_prob+red_prob))
+        # break
+
+# for data, outcome in game_data:
+#     data = torch.autograd.Variable(data).to(device)
+#     outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
+
+#     print(data,outcome)
