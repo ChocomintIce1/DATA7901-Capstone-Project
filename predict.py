@@ -40,38 +40,39 @@ goldredSupport = '[500, 500, 585, 793, 998, 1201, 1373, 1619, 1835, 2005, 2184, 
 
 # Create sequential dataset
 game_length = len(ast.literal_eval(golddiff))
+rnn_length = 95
 
 game_datasets = []
-for minute in range(1,game_length):
+for minute in range(1,rnn_length+1):
     # TODO: Make all list length of 95
     game_data = pd.DataFrame([
-        str(ast.literal_eval(golddiff)[:minute]),
+        str(ast.literal_eval(golddiff)[:minute] + [0] * (rnn_length - minute)),
 
-        str(ast.literal_eval(bKills)[:minute]),
-        str(ast.literal_eval(bTowers)[:minute]),
-        str(ast.literal_eval(bInhibs)[:minute]),
-        str(ast.literal_eval(bDragons)[:minute]),
-        str(ast.literal_eval(bBarons)[:minute]),
-        str(ast.literal_eval(bHeralds)[:minute]),
+        str(ast.literal_eval(bKills)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(bTowers)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(bInhibs)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(bDragons)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(bBarons)[:minute] + [0] * (game_length - minute)),
+        str(ast.literal_eval(bHeralds)[:minute] + [0] * (rnn_length - minute)),
 
-        str(ast.literal_eval(rKills)[:minute]),
-        str(ast.literal_eval(rTowers)[:minute]),
-        str(ast.literal_eval(rInhibs)[:minute]),
-        str(ast.literal_eval(rDragons)[:minute]),
-        str(ast.literal_eval(rBarons)[:minute]),
-        str(ast.literal_eval(rHeralds)[:minute]),
+        str(ast.literal_eval(rKills)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(rTowers)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(rInhibs)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(rDragons)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(rBarons)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(rHeralds)[:minute] + [0] * (rnn_length - minute)),
 
-        str(ast.literal_eval(goldblueTop)[:minute]),
-        str(ast.literal_eval(goldblueJungle)[:minute]),
-        str(ast.literal_eval(goldblueMiddle)[:minute]),
-        str(ast.literal_eval(goldblueADC)[:minute]),
-        str(ast.literal_eval(goldblueSupport)[:minute]),
+        str(ast.literal_eval(goldblueTop)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldblueJungle)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldblueMiddle)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldblueADC)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldblueSupport)[:minute] + [0] * (rnn_length - minute)),
 
-        str(ast.literal_eval(goldredTop)[:minute]),
-        str(ast.literal_eval(goldredJungle)[:minute]),
-        str(ast.literal_eval(goldredMiddle)[:minute]),
-        str(ast.literal_eval(goldredADC)[:minute]),
-        str(ast.literal_eval(goldredSupport)[:minute])
+        str(ast.literal_eval(goldredTop)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldredJungle)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldredMiddle)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldredADC)[:minute] + [0] * (rnn_length - minute)),
+        str(ast.literal_eval(goldredSupport)[:minute] + [0] * (rnn_length - minute))
     ])
 
     # Test
@@ -83,6 +84,8 @@ for minute in range(1,game_length):
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition1.pt')
+
+minute = 1
 for game_data in game_datasets:
     for data, outcome in game_data:
         data = torch.autograd.Variable(data).to(device)
@@ -102,8 +105,12 @@ for game_data in game_datasets:
             blue_prob += -2 * red_prob
             red_prob = -red_prob
 
-        print('blue prob:', blue_prob/(blue_prob+red_prob), 'red prob:', red_prob/(blue_prob+red_prob))
-        # break
+        if minute <= game_length+  1:
+            print(f'Min {minute}: ' +
+                f'blue prob: {round(blue_prob/(blue_prob+red_prob),2)} ' +
+                f'red prob:, {round(red_prob/(blue_prob+red_prob),2)}')
+        
+    minute += 1
 
 # for data, outcome in game_data:
 #     data = torch.autograd.Variable(data).to(device)
