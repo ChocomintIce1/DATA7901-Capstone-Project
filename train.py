@@ -45,11 +45,12 @@ optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
 
 # Training model
-def train(epochs=1, plot=False):
+def train(epochs=10, plot=False):
     training_loss_list = []
     validation_loss_list = []
 
     for epoch in range(epochs):
+        training_epoch_loss_list = []
         print(f"--------- Epoch #{epoch} ---------")
         for batch, (train, outcome) in enumerate(train_set):
             train = torch.autograd.Variable(train).to(device, dtype=torch.float32)
@@ -64,16 +65,21 @@ def train(epochs=1, plot=False):
             outcome = torch.LongTensor(outcome1)
 
             loss = loss_function(predict, outcome)
-
             optimiser.zero_grad()
             loss.backward()
+
+            # Save training loss
+            training_epoch_loss_list.append(loss_function(predict, outcome).item())
+
             optimiser.step()
 
-            training_loss_list.append(loss.item())
             if batch % 30 == 0:
                 loss, current = loss.item(), batch*len(X)
                 print(f'loss: {loss} [{current}/{len(train_set.dataset)}]')
-        
+
+        # Average testing loss
+        training_loss_list.append(np.mean(training_epoch_loss_list) + 10)
+
         # Testing
         rnn.eval()
         size = len(validation_set.dataset)
@@ -81,6 +87,7 @@ def train(epochs=1, plot=False):
         correct = 0
         validation_loss = 0
         with torch.no_grad():
+            validation_epoch_loss_list = []
             for batch, (validation, outcome) in enumerate(validation_set):
                 validation = torch.autograd.Variable(validation).to(device)
                 outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
@@ -93,13 +100,21 @@ def train(epochs=1, plot=False):
 
                 predict = rnn(validation)
                 validation_loss += loss_function(predict, outcome).item()
-                validation_loss_list.append(loss_function(predict, outcome).item())
+
+                # Save validation loss
+                validation_epoch_loss_list.append(loss_function(predict, outcome).item())
+
+                # Count correct predictions
                 correct += (predict.argmax(1) == outcome).sum().item()
+
+            # Average validation loss
+            validation_loss_list.append(np.mean(validation_epoch_loss_list))
 
             print(f"Acc:{correct/size:>7f}, Avg Loss: {validation_loss/size:>7f}")
 
     # Plot training/validation loss graph
     if plot:
+        print(training_loss_list, validation_loss_list)
         plt.plot(range(len(training_loss_list)), training_loss_list, 'b')
         plt.plot(range(len(validation_loss_list)), validation_loss_list, 'r')
         plt.show()
@@ -107,7 +122,7 @@ def train(epochs=1, plot=False):
 
 # Save the model
 if __name__ == '__main__':
-    train()
+    train(10, True)
     save_model = False
 
     if save_model:
