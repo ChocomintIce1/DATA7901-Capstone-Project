@@ -48,12 +48,10 @@ def train(epochs=10):
     for epoch in range(epochs):
         print(f"--------- Epoch #{epoch} ---------")
         for batch, (train, outcome) in enumerate(train_set):
-            train = torch.autograd.Variable(train).to(device)
-            outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
+            train = torch.autograd.Variable(train).to(device, dtype=torch.float32)
+            outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.int16)
 
             predict = rnn(train)
-            # print('printing shape', predict.size(0), outcome.size(0))
-            # print('predict', predict)
 
             # Reformat outcome tensor
             outcome1 = []
@@ -97,7 +95,7 @@ def train(epochs=10):
 # Save the model
 if __name__ == '__main__':
     train()
-    save_model = True
+    save_model = False
 
     if save_model:
         print('Model saved')
