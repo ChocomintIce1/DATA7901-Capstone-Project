@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from dataset import *
 from modules import RNN
 from torch.utils.data import DataLoader, random_split
@@ -44,7 +45,10 @@ optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
 
 # Training model
-def train(epochs=10):
+def train(epochs=1, plot=False):
+    training_loss_list = []
+    validation_loss_list = []
+
     for epoch in range(epochs):
         print(f"--------- Epoch #{epoch} ---------")
         for batch, (train, outcome) in enumerate(train_set):
@@ -65,6 +69,7 @@ def train(epochs=10):
             loss.backward()
             optimiser.step()
 
+            training_loss_list.append(loss.item())
             if batch % 30 == 0:
                 loss, current = loss.item(), batch*len(X)
                 print(f'loss: {loss} [{current}/{len(train_set.dataset)}]')
@@ -74,7 +79,7 @@ def train(epochs=10):
         size = len(validation_set.dataset)
 
         correct = 0
-        test_loss = 0
+        validation_loss = 0
         with torch.no_grad():
             for batch, (validation, outcome) in enumerate(validation_set):
                 validation = torch.autograd.Variable(validation).to(device)
@@ -87,10 +92,18 @@ def train(epochs=10):
                 outcome = torch.LongTensor(outcome1)
 
                 predict = rnn(validation)
-                test_loss += loss_function(predict, outcome).item()
+                validation_loss += loss_function(predict, outcome).item()
+                validation_loss_list.append(loss_function(predict, outcome).item())
                 correct += (predict.argmax(1) == outcome).sum().item()
 
-            print(f"Acc:{correct/size:>7f}, Avg Loss: {test_loss/size:>7f}")
+            print(f"Acc:{correct/size:>7f}, Avg Loss: {validation_loss/size:>7f}")
+
+    # Plot training/validation loss graph
+    if plot:
+        plt.plot(range(len(training_loss_list)), training_loss_list, 'b')
+        plt.plot(range(len(validation_loss_list)), validation_loss_list, 'r')
+        plt.show()
+
 
 # Save the model
 if __name__ == '__main__':
