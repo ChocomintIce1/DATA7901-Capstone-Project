@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader, random_split
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
-X = read_processed_dataset(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\processed_X1.csv')
+X = read_processed_dataset(r'processed_X1.csv')
 y = read_dataset()[1]
 # y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
 
@@ -46,7 +46,7 @@ optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
 
 # Training model
-def train(epochs=10, plot=True):
+def train(epochs=2, plot=True):
     training_loss_list = []
     validation_loss_list = []
 
@@ -54,6 +54,7 @@ def train(epochs=10, plot=True):
         training_epoch_loss_list = []
         print(f"--------- Epoch #{epoch} ---------")
         for batch, (train, outcome) in enumerate(train_set):
+            rnn.train()
             train = torch.autograd.Variable(train).to(device, dtype=torch.float32)
             outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.int16)
 
@@ -63,7 +64,7 @@ def train(epochs=10, plot=True):
             outcome1 = []
             for o in outcome:
                 outcome1.append(o)
-            outcome = torch.LongTensor(outcome1)
+            outcome = torch.LongTensor(outcome1).to(device)
 
             loss = loss_function(predict, outcome)
             optimiser.zero_grad()
@@ -97,7 +98,7 @@ def train(epochs=10, plot=True):
                 outcome1 = []
                 for o in outcome:
                     outcome1.append(o)
-                outcome = torch.LongTensor(outcome1)
+                outcome = torch.LongTensor(outcome1).to(device)
 
                 predict = rnn(validation)
                 validation_loss += loss_function(predict, outcome).item()
@@ -117,14 +118,19 @@ def train(epochs=10, plot=True):
     if plot:
         print("training loss\n", training_loss_list) 
         print("validation loss\n", validation_loss_list)
+
+        plt.title('Validation curve')
+        plt.xlabel('# of epochs')
+        plt.ylabel('loss')
         plt.plot(range(len(training_loss_list)), training_loss_list, 'b')
         plt.plot(range(len(validation_loss_list)), validation_loss_list, 'r')
+        plt.legend(["training", "validation"])
         plt.show()
 
 
 # Save the model
 if __name__ == '__main__':
-    train(10, True)
+    train(1, True)
     save_model = True
 
     if save_model:
