@@ -1,5 +1,9 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "CPU")
 
 
 class RNN(nn.Module):
@@ -17,19 +21,25 @@ class RNN(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
 
-        self.rnn = nn.RNN(input_size=input_size, hidden_size=self.hidden_size, num_layers=1, nonlinearity='relu', batch_first=True)
+        # self.rnn = nn.RNN(input_size=input_size, hidden_size=self.hidden_size, num_layers=1, nonlinearity='relu', batch_first=True)
+        self.rnn = nn.RNN(input_size=input_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True)
 
-        # self.layer1 = nn.Linear(input_size, output_size)
-        self.layer2 = nn.Linear(self.hidden_size, 2)
-    
+        self.layer1 = nn.Linear(self.hidden_size, self.hidden_size)
+        self.layer2 = nn.Linear(self.hidden_size, self.hidden_size)
+        self.layer3 = nn.Linear(self.hidden_size, output_size)
+        self.to(device)
+        
+        # working
+        # self.layer2 = nn.Linear(self.input_size, output_size)
+
     def forward(self, x):
         # Initialise hidden state with zeros
-        hidden0 = torch.autograd.Variable(torch.zeros(1, len(x), self.hidden_size))
+        hidden0 = torch.autograd.Variable(torch.zeros(1, len(x), self.hidden_size).to(device))
 
         # One time step
         output, hidden = self.rnn(x, hidden0)
-        # print(output.size())
-        output = self.layer2(output[:, -1, :])
-        # output = self.layer2(output[:, -1, :])
+        output = F.relu(self.layer1(output[:, -1, :]))
+        output = F.relu(self.layer2(output))
+        output = F.softmax(self.layer3(output))
 
         return output

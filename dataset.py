@@ -19,7 +19,7 @@ def read_dataset() -> pd.DataFrame:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    df = pd.read_csv('C:/Users/Jae/iCloudDrive/UQ/DATA7901/Project/DATA7901-Capstone-Project/archive/LeagueofLegends.csv')
+    df = pd.read_csv('archive/LeagueofLegends.csv')
 
     # Clean up dataset
 
@@ -133,7 +133,7 @@ def process_dataset(X=None, save_csv=False) -> pd.DataFrame:
 
     if save_csv:
         print('saved csv')
-        new_X.to_csv('C:/Users/Jae/iCloudDrive/UQ/DATA7901/Project/DATA7901-Capstone-Project/processed_X1.csv', index_label=False)
+        new_X.to_csv('processed_X1.csv', index_label=False)
 
     return new_X
 

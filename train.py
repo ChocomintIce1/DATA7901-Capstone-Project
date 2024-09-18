@@ -35,17 +35,18 @@ validation_set = DataLoader(validation_set, batch_size=batch_size)
 test_set = DataLoader(test_set, batch_size=batch_size)
 
 # Create model
-lr = 0.001
+lr = 0.00001
 hidden_size = 128
 
 max_time = get_max_time(X)
+# print('here', X.shape[1])
 rnn = RNN(input_size=max_time, feature_size=X.shape[1], hidden_size=hidden_size, output_size=2)
 rnn = rnn.to(device)
 optimiser = torch.optim.Adam(rnn.parameters(), lr=lr)
 loss_function = torch.nn.CrossEntropyLoss()
 
 # Training model
-def train(epochs=10, plot=False):
+def train(epochs=10, plot=True):
     training_loss_list = []
     validation_loss_list = []
 
@@ -78,7 +79,7 @@ def train(epochs=10, plot=False):
                 print(f'loss: {loss} [{current}/{len(train_set.dataset)}]')
 
         # Average testing loss
-        training_loss_list.append(np.mean(training_epoch_loss_list) + 10)
+        training_loss_list.append(np.mean(training_epoch_loss_list))
 
         # Testing
         rnn.eval()
@@ -114,7 +115,8 @@ def train(epochs=10, plot=False):
 
     # Plot training/validation loss graph
     if plot:
-        print(training_loss_list, validation_loss_list)
+        print("training loss\n", training_loss_list) 
+        print("validation loss\n", validation_loss_list)
         plt.plot(range(len(training_loss_list)), training_loss_list, 'b')
         plt.plot(range(len(validation_loss_list)), validation_loss_list, 'r')
         plt.show()
@@ -123,8 +125,8 @@ def train(epochs=10, plot=False):
 # Save the model
 if __name__ == '__main__':
     train(10, True)
-    save_model = False
+    save_model = True
 
     if save_model:
         print('Model saved')
-        torch.save(rnn, 'League_of_Legends_predicition1.pt')
+        torch.save(rnn, 'League_of_Legends_predicition.pt')
