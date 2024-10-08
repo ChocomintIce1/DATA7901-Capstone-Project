@@ -19,7 +19,8 @@ def read_dataset() -> pd.DataFrame:
         tuple: Returns a predictor dataframe and label dataframe
     """
     # Read csv
-    df = pd.read_csv('archive/LeagueofLegends.csv')
+    # df = pd.read_csv('archive/LeagueofLegends.csv')
+    df = pd.read_csv('/media/jae/Games/DATA7901-Capstone-Project/archive/LeagueofLegends.csv')
 
     # Clean up dataset
 

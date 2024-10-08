@@ -92,7 +92,8 @@ for minute in range(1,rnn_length+1):
     game_datasets.append(game_data)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition1.pt')
+# rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition1.pt')
+rnn = torch.load('/media/jae/Games/DATA7901-Capstone-Project/League_of_Legends_predicition_7ayers_128nodes_100epoch_rng1345245047.pt')
 
 minute = 1
 timeline = []
@@ -107,13 +108,13 @@ for game_data in game_datasets:
         red_prob = result[0][1].item()
 
         # if negative score
-        if blue_prob < 0:
-            red_prob += -2 * blue_prob
-            blue_prob = -blue_prob
+        # if blue_prob < 0:
+        #     red_prob += -2 * blue_prob
+        #     blue_prob = -blue_prob
 
-        elif red_prob < 0:
-            blue_prob += -2 * red_prob
-            red_prob = -red_prob
+        # elif red_prob < 0:
+        #     blue_prob += -2 * red_prob
+        #     red_prob = -red_prob
 
         if minute <= game_length + 1:
             print(f'Min {minute}: ' +
@@ -130,4 +131,5 @@ for data, outcome in game_data:
     outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
 
 plt.plot(range(game_length), timeline[:game_length])
+plt.plot([t for t in range(game_length)],[0.5 for _ in range(game_length)])
 plt.show()

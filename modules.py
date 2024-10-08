@@ -27,6 +27,11 @@ class RNN(nn.Module):
         self.layer1 = nn.Linear(self.hidden_size, self.hidden_size)
         self.layer2 = nn.Linear(self.hidden_size, self.hidden_size)
         self.layer3 = nn.Linear(self.hidden_size, output_size)
+        
+        self.layer2a = nn.Linear(self.hidden_size, self.hidden_size)
+        self.layer2b = nn.Linear(self.hidden_size, self.hidden_size)
+        self.layer2c = nn.Linear(self.hidden_size, self.hidden_size)
+        self.layer2d = nn.Linear(self.hidden_size, self.hidden_size)
         self.to(device)
         
         # working
@@ -40,6 +45,12 @@ class RNN(nn.Module):
         output, hidden = self.rnn(x, hidden0)
         output = F.relu(self.layer1(output[:, -1, :]))
         output = F.relu(self.layer2(output))
+
+        output = F.relu(self.layer2a(output))
+        output = F.relu(self.layer2b(output))
+        output = F.relu(self.layer2d(output))
+        output = F.relu(self.layer2c(output))
+
         output = F.softmax(self.layer3(output))
 
         return output

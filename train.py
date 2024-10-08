@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader, random_split
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
-X = read_processed_dataset(r'processed_X1.csv')
+X = read_processed_dataset(r'/media/jae/Games/DATA7901-Capstone-Project/processed_X1.csv')
 y = read_dataset()[1]
 # y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
 
@@ -129,7 +129,7 @@ def train(epochs=2, plot=True):
         plt.plot(range(len(training_loss_list)), training_loss_list, 'b')
         plt.plot(range(len(validation_loss_list)), validation_loss_list, 'r')
         plt.legend(["training", "validation"])
-        plt.savefig()
+        plt.savefig("fig")
 
 # Test model
 def test(dataloader, model, loss_function):
@@ -154,17 +154,19 @@ def test(dataloader, model, loss_function):
             test_loss += loss_function(predict, outcome).item()
             correct += (predict.argmax(1) == outcome).sum().item()
 
-    print(f"Acc:{correct/size:>7f}, Avg Loss: {test_loss/size:>7f}")
+    print(f"Test acc:{correct/size:>7f}, Avg Loss: {test_loss/size:>7f}")
     return correct/size
 
 # Save the model
 if __name__ == '__main__':
-    train(100, True)
+    print(device)
+    train(50, True)
     save_model = True
 
     if save_model:
         print('Model saved')
-        torch.save(rnn, f'League_of_Legends_predicition_1000_epoch_rng{rng}.pt')
+        model_name = f'League_of_Legends_predicition_7ayers_128nodes_100epoch_rng{rng}.pt'
+        torch.save(rnn, model_name)
     
-    model = torch.load(f'League_of_Legends_predicition_1000_epoch_rng{rng}.pt')
+    model = torch.load(model_name)
     test(test_set, model, loss_function)
