@@ -26,6 +26,9 @@ test_size = n - train_size - validation_size
 # print(X.shape, train_size, validation_size, test_size)
 
 # Split dataset
+rng = np.random.randint(2**31)
+print('rng:', rng)
+np.random.seed(rng) # fix seed for testing purposes
 train_set, validation_set, test_set = random_split(dataset=league_dataset,
                                                 lengths=[train_size,validation_size,test_size])
 
@@ -156,12 +159,12 @@ def test(dataloader, model, loss_function):
 
 # Save the model
 if __name__ == '__main__':
-    # train(100, True)
-    # save_model = True
+    train(100, True)
+    save_model = True
 
-    # if save_model:
-    #     print('Model saved')
-    #     torch.save(rnn, 'League_of_Legends_predicition_100_epoch.pt')
+    if save_model:
+        print('Model saved')
+        torch.save(rnn, f'League_of_Legends_predicition_1000_epoch_rng{rng}.pt')
     
-    model = torch.load("League_of_Legends_predicition_100_epoch.pt")
+    model = torch.load(f'League_of_Legends_predicition_1000_epoch_rng{rng}.pt')
     test(test_set, model, loss_function)
