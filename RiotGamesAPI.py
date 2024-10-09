@@ -5,7 +5,9 @@ from selenium import webdriver # Version 3.3.0
 
 # Timeline
 link = "https://gol.gg/game/stats/44421/page-timeline/"
-# link = "https://gol.gg/game/stats/44418/page-timeline/"
+link = "https://gol.gg/game/stats/44418/page-timeline/"
+link = "https://gol.gg/game/stats/44417/page-timeline/"
+link = "https://gol.gg/game/stats/44419/page-timeline/"
 
 def process_link(link=link):
     driver = webdriver.PhantomJS(r"C:\Users\Jae\Documents\phantomjs-2.1.1-windows\bin\phantomjs.exe")
@@ -77,27 +79,32 @@ def process_link(link=link):
         gold_data: list(list())
 
         Returns: All gold variables needed for RNN
-        """        
-        # Individual gold diff
-        goldblueTop = str(gold_data[0])
-        goldblueJungle = str(gold_data[1])
-        goldblueMiddle = str(gold_data[2])
-        goldblueADC = str(gold_data[3])
-        goldblueSupport = str(gold_data[4])
+        """
+        match_length = len(gold_data[0])
 
-        goldredTop = str(gold_data[5])
-        goldredJungle = str(gold_data[6])
-        goldredMiddle = str(gold_data[7])
-        goldredADC = str(gold_data[8])
-        goldredSupport = str(gold_data[9])
+        # Individual gold
+        goldblueTop = str(gold_data[0] + (95 - match_length)*[gold_data[0][-1]])
+        goldblueJungle = str(gold_data[1] + (95 - match_length)*[gold_data[1][-1]])
+        goldblueMiddle = str(gold_data[2] + (95 - match_length)*[gold_data[2][-1]])
+        goldblueADC = str(gold_data[3] + (95 - match_length)*[gold_data[3][-1]])
+        goldblueSupport = str(gold_data[4] + (95 - match_length)*[gold_data[4][-1]])
+
+        goldredTop = str(gold_data[5] + (95 - match_length)*[gold_data[5][-1]])
+        goldredJungle = str(gold_data[6] + (95 - match_length)*[gold_data[6][-1]])
+        goldredMiddle = str(gold_data[7] + (95 - match_length)*[gold_data[7][-1]])
+        goldredADC = str(gold_data[8] + (95 - match_length)*[gold_data[8][-1]])
+        goldredSupport = str(gold_data[0] + (95 - match_length)*[gold_data[9][-1]])
 
         # Find gold diff
         blue_gold = np.sum(np.array(gold_data[:5]), axis=0)
         red_gold = np.sum(np.array(gold_data[5:]), axis=0)
 
-        golddiff = str(list(np.sum(np.array([blue_gold, -1*red_gold]), axis=0)))
-        golddiff += (len(goldblueTop) - len(golddiff))*golddiff[-1] # Populate events
+        golddiff = list(np.sum(np.array([blue_gold, -1*red_gold]), axis=0))
+        final_value = golddiff[-1]
 
+        # Populate events
+        golddiff = str(golddiff + (len(goldblueTop) - match_length)*[final_value])
+        
         return [golddiff,
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
             goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
@@ -161,7 +168,7 @@ def process_link(link=link):
                 if team == "red":
                     rHeralds[int(event_time.split(":")[0])] += 1
 
-        return [str(data + (len(golddiff) - len(data))*data[-1]) for data in [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
+        return [str(data + (len(golddiff) - len(data))*[data[-1]]) for data in [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
             rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds]]
 
     for html_source_string in html_page_source_list:
@@ -216,4 +223,4 @@ def process_link(link=link):
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
             goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
 
-# print(process_link())
+# print(process_link()[0], process_link()[13], process_link()[18])

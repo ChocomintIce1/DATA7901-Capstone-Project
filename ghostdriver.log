@@ -1,0 +1,28 @@
+[INFO  - 2024-10-09T19:25:53.221Z] GhostDriver - Main - running on port 49526
+[INFO  - 2024-10-09T19:25:54.384Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2024-10-09T19:25:54.385Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.customHeaders:  - {}
+[INFO  - 2024-10-09T19:25:54.385Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2024-10-09T19:25:54.385Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 4d596fd0-8674-11ef-92a6-2bb5ab2986c2
+[ERROR - 2024-10-09T19:25:56.269Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.onError - msg: ReferenceError: Can't find variable: globalThis
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2024-10-09T19:25:56.270Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.onError - stack:
+  (anonymous function) (https://www.googletagmanager.com/gtag/js?id=G-J1K08MER9S:208)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2024-10-09T19:25:58.469Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.onError - msg: Error: X`https://gol.gg/game/stats/44419/page-timeline/
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2024-10-09T19:25:58.469Z] Session [4d596fd0-8674-11ef-92a6-2bb5ab2986c2] - page.onError - stack:
+  (anonymous function) (https://fundingchoicesmessages.google.com/i/ca-pub-9207244878136733?ers=2:13)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2024-10-09T19:25:52.387Z] Session [474ece50-8674-11ef-b3c6-e75e75a95a72] - page.onError - msg: TypeError: Properties can only be defined on Objects.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2024-10-09T19:25:52.388Z] Session [474ece50-8674-11ef-b3c6-e75e75a95a72] - page.onError - stack:
+  defineProperty (undefined:4598)
+  cC (:4598)
+  (anonymous function) (:4598)
+
+  phantomjs://platform/console++.js:263 in error
