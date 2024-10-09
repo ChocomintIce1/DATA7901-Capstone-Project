@@ -1,5 +1,5 @@
 import ast
-import re
+import numpy as np
 from selenium import webdriver # Version 3.3.0
 
 
@@ -54,7 +54,7 @@ goldredADC = []
 goldredSupport = []
 
 # Process source
-# if count <= 4 -> blue, count >=5 -> red
+# if count < 5 -> blue, count >=5 -> red
 html_page_source_list = html_page_source.split("\n")
 inside_golddatas = False
 inside_events = False
@@ -70,8 +70,26 @@ def process_gold_data(gold_data):
     match_length = range(len(gold_data[0]))
 
     # Find gold diff
-    print(sum(gold_data[:5][t] for t in match_length))
-    # golddiff.append(sum(event[:5][t] for t in match_length))
+    blue_gold = np.sum(np.array(gold_data[:5]), axis=0)
+    red_gold = np.sum(np.array(gold_data[5:]), axis=0)
+
+    golddiff = np.sum(np.array([blue_gold, -1*red_gold]), axis=0)
+    
+    # Individual gold diff
+    goldblueTop = gold_data[0]
+    goldblueJungle = gold_data[1]
+    goldblueMiddle = gold_data[2]
+    goldblueADC = gold_data[3]
+    goldblueSupport = gold_data[4]
+
+    goldredTop = gold_data[5]
+    goldredJungle = gold_data[6]
+    goldredMiddle = gold_data[7]
+    goldredADC = gold_data[8]
+    goldredSupport = gold_data[9]
+
+    print('her')
+
 
 for html_source_string in html_page_source_list:
     # Process gold data
