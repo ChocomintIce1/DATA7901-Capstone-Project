@@ -82,10 +82,6 @@ for minute in range(1,rnn_length+1):
         str(ast.literal_eval(goldredADC)[:minute] + [0] * (rnn_length - minute)),
         str(ast.literal_eval(goldredSupport)[:minute] + [0] * (rnn_length - minute))
     ])
-
-    # Test
-    # game_data = pd.DataFrame([[str([5] * 95) for _ in range(23)]])
-
     game_data = LeagueDataset(game_data, pd.DataFrame([0]))
     game_data = DataLoader(game_data, batch_size=1)
     game_datasets.append(game_data)
@@ -106,15 +102,6 @@ for game_data in game_datasets:
 
         blue_prob = result[0][0].item()
         red_prob = result[0][1].item()
-
-        # if negative score
-        # if blue_prob < 0:
-        #     red_prob += -2 * blue_prob
-        #     blue_prob = -blue_prob
-
-        # elif red_prob < 0:
-        #     blue_prob += -2 * red_prob
-        #     red_prob = -red_prob
 
         if minute <= game_length + 1:
             print(f'Min {minute}: ' +
