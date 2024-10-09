@@ -7,40 +7,6 @@ from selenium import webdriver # Version 3.3.0
 link = "https://gol.gg/game/stats/44421/page-timeline/"
 # link = "https://gol.gg/game/stats/44418/page-timeline/"
 
-def process_gold_data(gold_data):
-        """
-        Helper function, Assumes blue top -> red supp
-
-        gold_data: list(list())
-
-        Returns: All gold variables needed for RNN
-        """
-        match_length = range(len(gold_data[0]))
-
-        # Find gold diff
-        blue_gold = np.sum(np.array(gold_data[:5]), axis=0)
-        red_gold = np.sum(np.array(gold_data[5:]), axis=0)
-
-        golddiff = np.sum(np.array([blue_gold, -1*red_gold]), axis=0)
-        
-        # Individual gold diff
-        goldblueTop = gold_data[0]
-        goldblueJungle = gold_data[1]
-        goldblueMiddle = gold_data[2]
-        goldblueADC = gold_data[3]
-        goldblueSupport = gold_data[4]
-
-        goldredTop = gold_data[5]
-        goldredJungle = gold_data[6]
-        goldredMiddle = gold_data[7]
-        goldredADC = gold_data[8]
-        goldredSupport = gold_data[9]
-
-        return [golddiff,
-            goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
-            goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
-
-
 def process_link(link=link):
     driver = webdriver.PhantomJS(r"C:\Users\Jae\Documents\phantomjs-2.1.1-windows\bin\phantomjs.exe")
     driver.get(link)
@@ -197,22 +163,6 @@ def process_link(link=link):
                 if team == "red":
                     rHeralds[int(event_time.split(":")[0])] += 1
 
-        stats = [('Blue Kills', bKills),
-                ('Blue Towers', bTowers),
-                ('Blue Inhibs', bInhibs),
-                ('Blue Dragons', bDragons),
-                ('Blue Barons', bBarons),
-                ('Blue Heralds', bHeralds),
-                ('Red Kills', rKills),
-                ('Red Towers', rTowers),
-                ('Red Inhibs', rInhibs),
-                ('Red Dragons', rDragons),
-                ('Red Barons', rBarons),
-                ('Red Heralds', rHeralds)]
-
-        for label, values in stats:
-            print(f"{label}: {sum(values)}")
-
         return [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
             rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds]
 
@@ -237,7 +187,9 @@ def process_link(link=link):
         # If all of gold information extracted
         if csdatas in html_source_string:
             inside_golddatas = False
-            process_gold_data(gold_lists)
+            golddiff,\
+            goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,\
+            goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport = process_gold_data(gold_lists)
         
         # Process events data
         # If string is events information
@@ -259,6 +211,13 @@ def process_link(link=link):
         # If end of events
         if "function ShowPoint" in html_source_string:
             inside_events = False
-            process_events_data(unprocessed_events, first_event_team)
+            bKills,bTowers, bInhibs, bDragons, bBarons, bHeralds,\
+            rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds = process_events_data(unprocessed_events, first_event_team)
     
-    return 
+    return [golddiff,
+            bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
+            rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds,
+            goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
+            goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
+
+print(process_link())
