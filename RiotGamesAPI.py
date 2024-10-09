@@ -36,33 +36,33 @@ def process_link(link=link):
     unprocessed_events = []
 
     # Data needed
-    golddiff = [0 for i in range(95)]
+    golddiff = [0 for i in range(96)]
 
-    bKills = [0 for i in range(95)]
-    bTowers = [0 for i in range(95)]
-    bInhibs = [0 for i in range(95)]
-    bDragons = [0 for i in range(95)]
-    bBarons = [0 for i in range(95)]
-    bHeralds = [0 for i in range(95)]
+    bKills = [0 for i in range(96)]
+    bTowers = [0 for i in range(96)]
+    bInhibs = [0 for i in range(96)]
+    bDragons = [0 for i in range(96)]
+    bBarons = [0 for i in range(96)]
+    bHeralds = [0 for i in range(96)]
 
-    rKills = [0 for i in range(95)]
-    rTowers = [0 for i in range(95)]
-    rInhibs = [0 for i in range(95)]
-    rDragons = [0 for i in range(95)]
-    rBarons = [0 for i in range(95)]
-    rHeralds = [0 for i in range(95)]
+    rKills = [0 for i in range(96)]
+    rTowers = [0 for i in range(96)]
+    rInhibs = [0 for i in range(96)]
+    rDragons = [0 for i in range(96)]
+    rBarons = [0 for i in range(96)]
+    rHeralds = [0 for i in range(96)]
 
-    goldblueTop = [0 for i in range(95)]
-    goldblueJungle = [0 for i in range(95)]
-    goldblueMiddle = [0 for i in range(95)]
-    goldblueADC = [0 for i in range(95)]
-    goldblueSupport = [0 for i in range(95)]
+    goldblueTop = [0 for i in range(96)]
+    goldblueJungle = [0 for i in range(96)]
+    goldblueMiddle = [0 for i in range(96)]
+    goldblueADC = [0 for i in range(96)]
+    goldblueSupport = [0 for i in range(96)]
 
-    goldredTop = [0 for i in range(95)]
-    goldredJungle = [0 for i in range(95)]
-    goldredMiddle = [0 for i in range(95)]
-    goldredADC = [0 for i in range(95)]
-    goldredSupport = [0 for i in range(95)]
+    goldredTop = [0 for i in range(65)]
+    goldredJungle = [0 for i in range(96)]
+    goldredMiddle = [0 for i in range(96)]
+    goldredADC = [0 for i in range(96)]
+    goldredSupport = [0 for i in range(96)]
 
     # Process source
     # if count < 5 -> blue, count >=5 -> red
@@ -77,27 +77,26 @@ def process_link(link=link):
         gold_data: list(list())
 
         Returns: All gold variables needed for RNN
-        """
-        match_length = range(len(gold_data[0]))
+        """        
+        # Individual gold diff
+        goldblueTop = str(gold_data[0])
+        goldblueJungle = str(gold_data[1])
+        goldblueMiddle = str(gold_data[2])
+        goldblueADC = str(gold_data[3])
+        goldblueSupport = str(gold_data[4])
+
+        goldredTop = str(gold_data[5])
+        goldredJungle = str(gold_data[6])
+        goldredMiddle = str(gold_data[7])
+        goldredADC = str(gold_data[8])
+        goldredSupport = str(gold_data[9])
 
         # Find gold diff
         blue_gold = np.sum(np.array(gold_data[:5]), axis=0)
         red_gold = np.sum(np.array(gold_data[5:]), axis=0)
 
-        golddiff = np.sum(np.array([blue_gold, -1*red_gold]), axis=0)
-        
-        # Individual gold diff
-        goldblueTop = gold_data[0]
-        goldblueJungle = gold_data[1]
-        goldblueMiddle = gold_data[2]
-        goldblueADC = gold_data[3]
-        goldblueSupport = gold_data[4]
-
-        goldredTop = gold_data[5]
-        goldredJungle = gold_data[6]
-        goldredMiddle = gold_data[7]
-        goldredADC = gold_data[8]
-        goldredSupport = gold_data[9]
+        golddiff = str(list(np.sum(np.array([blue_gold, -1*red_gold]), axis=0)))
+        golddiff += (len(goldblueTop) - len(golddiff))*golddiff[-1] # Populate events
 
         return [golddiff,
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
@@ -115,7 +114,6 @@ def process_link(link=link):
                 
                 # If red team gets kill
                 if team == "red":
-                    print(event_time, team)
                     rKills[int(event_time.split(":")[0])] += 1
 
             elif tower in unprocessed_event:
@@ -163,8 +161,8 @@ def process_link(link=link):
                 if team == "red":
                     rHeralds[int(event_time.split(":")[0])] += 1
 
-        return [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
-            rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds]
+        return [str(data + (len(golddiff) - len(data))*data[-1]) for data in [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
+            rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds]]
 
     for html_source_string in html_page_source_list:
         # Process gold data
@@ -174,8 +172,6 @@ def process_link(link=link):
         
         if inside_golddatas:
             if "label:" in html_source_string:
-                role =  html_source_string.split(" ")[3][1:-2]
-                # print("role:", role)
                 count += 1
             
             if "data:" in html_source_string:
@@ -220,4 +216,4 @@ def process_link(link=link):
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
             goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
 
-print(process_link())
+# print(process_link())
