@@ -21,17 +21,57 @@ red_side = "../_img/redside-icon.png"
 count = 0
 role = None
 data = []
+gold_lists = []
 unprocessed_events = []
 
+# Data needed
+golddiff = []
 
-def process_events(event_string):
-    pass
+bKills = []
+bTowers = []
+bInhibs = []
+bDragons = []
+bBarons = []
+bHeralds = []
+
+rKills = []
+rTowers = []
+rInhibs = []
+rDragons = []
+rBarons = []
+rHeralds = []
+
+goldblueTop = []
+goldblueJungle = []
+goldblueMiddle = []
+goldblueADC = []
+goldblueSupport = []
+
+goldredTop = []
+goldredJungle = []
+goldredMiddle = []
+goldredADC = []
+goldredSupport = []
 
 # Process source
 # if count <= 4 -> blue, count >=5 -> red
 html_page_source_list = html_page_source.split("\n")
 inside_golddatas = False
 inside_events = False
+
+def process_gold_data(gold_data):
+    """
+    Assumes blue top -> red supp
+
+    gold_data: list(list())
+
+    Returns: All gold variables needed for RNN
+    """
+    match_length = range(len(gold_data[0]))
+
+    # Find gold diff
+    print(sum(gold_data[:5][t] for t in match_length))
+    # golddiff.append(sum(event[:5][t] for t in match_length))
 
 for html_source_string in html_page_source_list:
     # Process gold data
@@ -49,10 +89,12 @@ for html_source_string in html_page_source_list:
             data = html_source_string.split(" ")[3][:-2] + "]"
             team = "blue" if count < 6 else "red"
             data = ast.literal_eval(data)
+            gold_lists.append(data)
 
     # If all of gold information extracted
     if csdatas in html_source_string:
         inside_golddatas = False
+        process_gold_data(gold_lists)
     
     # Process events data
     # If string is events information
@@ -69,16 +111,12 @@ for html_source_string in html_page_source_list:
         inside_events = False
 
         # If list has been populated
-        print(unprocessed_events[0])
-        print("==========================")
-        print(unprocessed_events[1])
+        # print(unprocessed_events[0])
+        # print("==========================")
+        # print(unprocessed_events[1])
         
         # for event in unprocessed_events:
         #     print(event)
         #     print("==========================")
 
 print('Done')
-
-# s = "ap@ple#ban@ana#cherry#or@ange"
-
-# print(re.split('@|#', s))
