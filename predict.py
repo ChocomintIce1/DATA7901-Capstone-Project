@@ -2,7 +2,7 @@ import torch
 import pandas as pd
 import ast
 import matplotlib.pyplot as plt
-from train import test_set
+# from train import test_set
 from torch.utils.data import DataLoader
 from dataset import LeagueDataset
 
@@ -40,7 +40,6 @@ goldredSupport = '[500, 500, 585, 793, 998, 1201, 1373, 1619, 1835, 2005, 2184, 
 
 
 # Create sequential dataset
-# game_length = len(ast.literal_eval(golddiff))
 # Find game length
 golddiff_list = ast.literal_eval(golddiff)
 for minute, gold in enumerate(ast.literal_eval(golddiff)):
@@ -92,8 +91,9 @@ for minute in range(1,rnn_length+1):
     game_datasets.append(game_data)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# rnn = torch.load(r'C:\Users\Jae\iCloudDrive\UQ\DATA7901\Project\DATA7901-Capstone-Project\League_of_Legends_predicition1.pt')
-rnn = torch.load('/media/jae/Games/DATA7901-Capstone-Project/League_of_Legends_predicition_7ayers_128nodes_100epoch_rng1345245047.pt')
+rnn = torch.load(r'D:\DATA7901-Capstone-Project\League_of_Legends_predicition_5layers_128nodes_50epoch_rng1440807823.pt',
+                 map_location=device)
+# rnn = torch.load('/media/jae/Games/DATA7901-Capstone-Project/League_of_Legends_predicition_7ayers_128nodes_100epoch_rng1345245047.pt')
 
 minute = 1
 timeline = []
@@ -130,6 +130,18 @@ for data, outcome in game_data:
     data = torch.autograd.Variable(data).to(device)
     outcome = torch.autograd.Variable(outcome).to(device, dtype=torch.long)
 
-plt.plot(range(game_length), timeline[:game_length])
-plt.plot([t for t in range(game_length)],[0.5 for _ in range(game_length)])
+# Plot graph
+# plt.plot(range(game_length), timeline[:game_length])
+import numpy as np
+blue_favourable = np.array(timeline[:game_length]) >= 0.5
+red_favourable = np.array(timeline[:game_length]) <= 0.5
+plt.fill_between(range(game_length), timeline[:game_length], y2=0.5, where=blue_favourable,
+    color='blue',alpha=0.5,interpolate=False)
+plt.fill_between(range(game_length), timeline[:game_length], y2=0.5, where=red_favourable,
+    color='red',alpha=0.5,interpolate=False)
+ax = plt.plot([t for t in range(-1, game_length+1)],[0.5 for _ in range(game_length+2)], c='black')
+plt.title('Win probability throughout game')
+plt.ylim([0,1])
+plt.xlabel('Time (minutes)')
+plt.ylabel('Blue side win probability (%)')
 plt.show()

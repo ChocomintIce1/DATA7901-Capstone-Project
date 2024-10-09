@@ -48,8 +48,8 @@ class RNN(nn.Module):
 
         output = F.relu(self.layer2a(output))
         output = F.relu(self.layer2b(output))
-        output = F.relu(self.layer2d(output))
-        output = F.relu(self.layer2c(output))
+        # output = F.relu(self.layer2c(output))
+        # output = F.relu(self.layer2d(output))
 
         output = F.softmax(self.layer3(output))
 

@@ -10,7 +10,9 @@ from torch.utils.data import DataLoader, random_split
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
-X = read_processed_dataset(r'/media/jae/Games/DATA7901-Capstone-Project/processed_X1.csv')
+# X = read_processed_dataset(r'/media/jae/Games/DATA7901-Capstone-Project/processed_X1.csv')
+X = read_processed_dataset(r"D:\DATA7901-Capstone-Project\processed_X1.csv")
+
 y = read_dataset()[1]
 # y = pd.DataFrame([0,1,1,0,0,1,0,1,0,1], dtype=np.float32)
 
