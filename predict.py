@@ -43,10 +43,6 @@ rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds,\
 goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,\
 goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport = process_link()
 
-for x in process_link():
-    x = ast.literal_eval(x)
-    print(len(x))
-
 # Create sequential dataset
 # Find game length
 game_length = 0
@@ -54,7 +50,8 @@ golddiff_list = ast.literal_eval(golddiff)
 for minute, gold in enumerate(ast.literal_eval(golddiff)):
     if minute > 20:
         if golddiff_list[minute] == golddiff_list[minute-1]:
-            game_length = minute
+            print(ast.literal_eval(golddiff))
+            game_length = minute-1
             break
 
 rnn_length = 95
@@ -100,7 +97,7 @@ rnn = torch.load(r'D:\DATA7901-Capstone-Project\League_of_Legends_predicition_5l
                  map_location=device)
 # rnn = torch.load('/media/jae/Games/DATA7901-Capstone-Project/League_of_Legends_predicition_7ayers_128nodes_100epoch_rng1345245047.pt')
 
-minute = 1
+minute = 0
 timeline = []
 for game_data in game_datasets:
     for data, outcome in game_data:
@@ -112,10 +109,10 @@ for game_data in game_datasets:
         blue_prob = result[0][0].item()
         red_prob = result[0][1].item()
 
-        if minute <= game_length + 1:
+        if minute < game_length:
             print(f'Min {minute}: ' +
                 f'blue prob: {round(blue_prob/(blue_prob+red_prob),2)} ' +
-                f'red prob:, {round(red_prob/(blue_prob+red_prob),2)}')
+                f'red prob: {round(red_prob/(blue_prob+red_prob),2)}')
             
             # Record probability
             timeline.append(round(blue_prob/(blue_prob+red_prob),2))

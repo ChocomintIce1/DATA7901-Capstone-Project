@@ -5,9 +5,9 @@ from selenium import webdriver # Version 3.3.0
 
 # Timeline
 link = "https://gol.gg/game/stats/44421/page-timeline/"
-link = "https://gol.gg/game/stats/44418/page-timeline/"
-link = "https://gol.gg/game/stats/44417/page-timeline/"
-link = "https://gol.gg/game/stats/44419/page-timeline/"
+# link = "https://gol.gg/game/stats/44418/page-timeline/"
+# link = "https://gol.gg/game/stats/44417/page-timeline/"
+# link = "https://gol.gg/game/stats/44419/page-timeline/"
 
 def process_link(link=link):
     driver = webdriver.PhantomJS(r"C:\Users\Jae\Documents\phantomjs-2.1.1-windows\bin\phantomjs.exe")
@@ -93,23 +93,24 @@ def process_link(link=link):
         goldredJungle = str(gold_data[6] + (95 - match_length)*[gold_data[6][-1]])
         goldredMiddle = str(gold_data[7] + (95 - match_length)*[gold_data[7][-1]])
         goldredADC = str(gold_data[8] + (95 - match_length)*[gold_data[8][-1]])
-        goldredSupport = str(gold_data[0] + (95 - match_length)*[gold_data[9][-1]])
+        goldredSupport = str(gold_data[9] + (95 - match_length)*[gold_data[9][-1]])
 
         # Find gold diff
         blue_gold = np.sum(np.array(gold_data[:5]), axis=0)
         red_gold = np.sum(np.array(gold_data[5:]), axis=0)
 
-        golddiff = list(np.sum(np.array([blue_gold, -1*red_gold]), axis=0))
+        golddiff = list(np.sum([blue_gold, -1*red_gold], axis=0))
         final_value = golddiff[-1]
 
         # Populate events
-        golddiff = str(golddiff + (len(goldblueTop) - match_length)*[final_value])
+        golddiff = str(golddiff + (95 - match_length)*[final_value])
         
         return [golddiff,
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
             goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
 
     def process_events_data(unprocessed_events, team):
+        count = 0
         for event_num, unprocessed_event in enumerate(unprocessed_events[1:-1]):
             event_time = unprocessed_event.split("<td>")[1][:-5]
             team = unprocessed_event.split('img src="../_img/')[1].split("side-icon.png")[0]
@@ -117,6 +118,8 @@ def process_link(link=link):
             if kill in unprocessed_event:
                 # If blue team gets kill
                 if team == "blue":
+                    count += 1
+                    # print("kill", event_time, team, count)
                     bKills[int(event_time.split(":")[0])] += 1
                 
                 # If red team gets kill
@@ -168,7 +171,7 @@ def process_link(link=link):
                 if team == "red":
                     rHeralds[int(event_time.split(":")[0])] += 1
 
-        return [str(data + (len(golddiff) - len(data))*[data[-1]]) for data in [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
+        return [str(data + (95 - len(data))*[data[-1]]) for data in [bKills, bTowers, bInhibs, bDragons, bBarons, bHeralds,
             rKills, rTowers, rInhibs, rDragons, rBarons, rHeralds]]
 
     for html_source_string in html_page_source_list:
@@ -223,4 +226,26 @@ def process_link(link=link):
             goldblueTop, goldblueJungle, goldblueMiddle, goldblueADC, goldblueSupport,
             goldredTop, goldredJungle, goldredMiddle, goldredADC, goldredSupport]
 
-# print(process_link()[0], process_link()[13], process_link()[18])
+names = [
+    "Gold Difference",
+    "Blue Kills", "Blue Towers", "Blue Inhibitors", "Blue Dragons", "Blue Barons", "Blue Heralds",
+    "Red Kills", "Red Towers", "Red Inhibitors", "Red Dragons", "Red Barons", "Red Heralds",
+    "Blue Top Gold", "Blue Jungle Gold", "Blue Middle Gold", "Blue ADC Gold", "Blue Support Gold",
+    "Red Top Gold", "Red Jungle Gold", "Red Middle Gold", "Red ADC Gold", "Red Support Gold"
+]
+
+# values = process_link()
+
+# for name, value in zip(names, values):
+#     value = ast.literal_eval(value)
+#     if " Gold" in name:
+#         print(f"{name}: {value[-1]}")
+
+#     elif "Blue Kills" in name:
+#         print(f"{name}: {value[:32]}")
+
+#     elif "Gold Diff" in name:
+#         print(f"{name}: {value[:32]}")
+
+#     else:
+#         print(f"{name}: {np.sum(value[:32])}")
