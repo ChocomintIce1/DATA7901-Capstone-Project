@@ -16,3 +16,6 @@ Cross-validation found that 5 layers with 128 interconnected node had the highes
 ## Demonstration
 Choosing a random game and extracting the game data, we observe the following graph.
 ![alt text](image-1.png)
+
+## How to use
+To run my model, simply run `predict.py` and enter the game you wish to analyse. To train your own model, run `train.py` and enter your own custom parameters into the model.
